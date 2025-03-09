@@ -18,7 +18,7 @@ public class UserDAO {
         }
         return false;
     }
-    
+
     public boolean isPhoneExist(String phone) {
         String sql = "SELECT userID FROM users WHERE phone = ?";
         try (Connection connection = DBConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -47,5 +47,60 @@ public class UserDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public User authenticate(String email, String password) {
+        String sql = "SELECT * FROM Users WHERE Email = ? AND Password = ?";
+        User user = null;
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            stmt.setString(2, password); // You should hash and compare instead of storing plain text passwords
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    user = new User(
+                            rs.getInt("UserID"),
+                            rs.getString("FullName"),
+                            rs.getString("Email"),
+                            rs.getString("Password"),
+                            rs.getString("Role"),
+                            rs.getString("Phone")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during authentication: " + e.getMessage());
+        }
+
+        return user;
+    }
+    
+    public User getUserByEmail(String email) {
+        String sql = "SELECT * FROM Users WHERE Email = ?";
+        User user = null;
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    user = new User(
+                            rs.getInt("UserID"),
+                            rs.getString("FullName"),
+                            rs.getString("Email"),
+                            rs.getString("Password"),
+                            rs.getString("Role"),
+                            rs.getString("Phone")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during authentication: " + e.getMessage());
+        }
+
+        return user;
     }
 }

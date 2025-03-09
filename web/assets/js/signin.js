@@ -1,4 +1,3 @@
-
 document.querySelectorAll('.toggle-password').forEach(function (toggle) {
     toggle.addEventListener('click', function () {
         const targetId = this.getAttribute('data-target');
