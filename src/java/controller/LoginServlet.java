@@ -42,7 +42,7 @@ public class LoginServlet extends HttpServlet {
 
             switch (role) {
                 case "Owner":
-                    redirectUrl = "/view/secure/ownerDashboard.jsp";
+                    redirectUrl = "/ownerDashboard";
                     break;
                 case "Inspector":
                     redirectUrl = "/view/secure/inspectorDashboard.jsp";
@@ -58,9 +58,9 @@ public class LoginServlet extends HttpServlet {
                     redirectUrl = "/view/signin.jsp";
                     break;
             }
+            System.out.println("Redirecting to: " + request.getContextPath() + redirectUrl);
             
             // Chuyển hướng đến URL tương ứng
-            System.out.println(request.getContextPath() + redirectUrl);
             response.sendRedirect(request.getContextPath() + redirectUrl);
         }
 
