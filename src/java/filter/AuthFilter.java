@@ -1,51 +1,52 @@
 package filter;
 
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 
 public class AuthFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // No initialization required
+        // Không cần khởi tạo gì đặc biệt
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
-        HttpSession session = req.getSession(false);
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        HttpSession session = httpRequest.getSession(false); // Không tạo session mới nếu chưa có
 
-        String path = req.getRequestURI();
+        String requestURI = httpRequest.getRequestURI();
+        String contextPath = httpRequest.getContextPath();
 
-        // Allow access to login, register, and public resources
-        if (path.endsWith("login") || path.endsWith("register") || path.endsWith("index.html") || path.contains("assets")) {
+        // Danh sách các trang công khai (không cần đăng nhập)
+        boolean isPublicPage = requestURI.endsWith("index.html") ||
+                               requestURI.endsWith("signin.jsp") ||
+                               requestURI.endsWith("register.jsp") ||
+                               requestURI.startsWith(contextPath + "/assets/"); // Cho phép truy cập tài nguyên tĩnh (CSS, JS, images)
+
+        // Nếu là trang công khai, cho phép truy cập mà không cần kiểm tra đăng nhập
+        if (isPublicPage) {
             chain.doFilter(request, response);
             return;
         }
 
-        // Check if user is authenticated
-        if (session == null || session.getAttribute("user") == null) {
-            res.sendRedirect(req.getContextPath() + "/view/signin.jsp"); // Redirect to login
+        // Nếu không phải trang công khai, kiểm tra đăng nhập
+        if (session == null || session.getAttribute("role") == null) {
+            // Chưa đăng nhập, chuyển hướng về signin.jsp
+            httpResponse.sendRedirect(contextPath + "/view/signin.jsp");
             return;
         }
 
-        // Continue with the request
+        // Nếu đã đăng nhập, cho phép tiếp tục (sẽ được xử lý bởi RoleFilter nếu cần)
         chain.doFilter(request, response);
     }
 
     @Override
     public void destroy() {
-        // No cleanup required
+        // Không cần xử lý gì khi hủy
     }
 }
