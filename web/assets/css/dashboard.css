@@ -1,10 +1,69 @@
-* {
-    
+
+body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+.sidebar {
+    position: fixed;
+    left: 0; /* Ẩn ban đầu */
+    width: 300px;
+    height: 100vh;
+    background-color: #343a40;
+    color: white;
+    transition: left 0.3s ease;
+    z-index: 1000;
+    padding: 20px 5px;
 }
 
-.container {
-    width: 1170px;
-    max-width: calc(100% - 48px);
-    margin-left: auto;
-    margin-right: auto;
+.content {
+    margin-left: 300px;
+    padding: 20px;
+    margin-top: 62px; /* Để tránh chồng lấn với navbar */
+}
+.sidebar-toggle {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    background-color: #343a40;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.nav-link {
+    padding: 10px 20px;
+    color: white;
+    font-size: 20px;
+}
+.nav-link:hover {
+    background-color: #ff5722;
+}
+.logout-section {
+    width: 100%;
+    padding: 10px;
+    background-color: inherit;
+}
+
+/* Sentiment styles */
+.status-success {
+    color: green;
+    font-weight: bold;
+}
+.status-error {
+    color: red;
+    font-weight: bold;
+}
+.status-pending {
+    color: orange;
+    font-weight: bold;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 20px;
 }

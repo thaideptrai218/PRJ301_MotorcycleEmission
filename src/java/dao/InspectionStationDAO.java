@@ -7,6 +7,7 @@ import java.util.List;
 import utils.DBConnection;
 
 public class InspectionStationDAO {
+
     private Connection conn;
 
     public InspectionStationDAO() {
@@ -29,6 +30,7 @@ public class InspectionStationDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("Error fetching InspectionStations: " + e.getMessage());
         }
         return stations;
     }

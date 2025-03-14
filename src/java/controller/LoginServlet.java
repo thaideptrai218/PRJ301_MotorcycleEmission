@@ -34,6 +34,8 @@ public class LoginServlet extends HttpServlet {
             // Lưu userId và role vào session (thay vì toàn bộ đối tượng user)
             session.setAttribute("userId", user.getUserID());
             session.setAttribute("userName", user.getFullName());
+            session.setAttribute("userEmail", user.getEmail());
+            session.setAttribute("userPhone", user.getPhone());
             session.setAttribute("role", user.getRole());
 
             // Điều hướng đến trang JSP tương ứng dựa trên vai trò
