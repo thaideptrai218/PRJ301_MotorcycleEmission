@@ -24,6 +24,6 @@ public class OwnerDashboardServlet extends HttpServlet {
         List<Vehicle> vehicles = vehicleDAO.getVehiclesByOwnerId(userId);
         session.setAttribute("vehicles", vehicles);
 
-        request.getRequestDispatcher("/owner/home").forward(request, response);
+        response.sendRedirect("owner/home");
     }
 }
