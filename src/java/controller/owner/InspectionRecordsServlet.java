@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+@WebServlet(name="InspectionRecordsServlet", urlPatterns={"/owner/inspectionRecords"})
 public class InspectionRecordsServlet extends HttpServlet {
+    
     private final InspectionRecordDAO inspectionRecordDAO = new InspectionRecordDAO();
 
     @Override
@@ -44,7 +47,7 @@ public class InspectionRecordsServlet extends HttpServlet {
         try {
             List<InspectionRecord> inspectionRecords = inspectionRecordDAO.getInspectionRecordsByScheduleId(scheduleId);
             request.setAttribute("inspectionRecords", inspectionRecords);
-            request.getRequestDispatcher("/view/secure/owner/inspectionrecords.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/secure/owner/inspectionRecords.jsp").forward(request, response);
         } catch (SQLException e) {
             session.setAttribute("errorMessage", "Lỗi khi tải kết quả kiểm định: " + e.getMessage());
             response.sendRedirect(request.getContextPath() + "/owner/inspectionRequests");
