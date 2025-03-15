@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class ScheduleInspectionServlet extends HttpServlet {
-
     private final InspectionScheduleDAO scheduleDAO = new InspectionScheduleDAO();
     private final VerificationDAO verificationDAO = new VerificationDAO();
     private final NotificationDAO notificationDAO = new NotificationDAO();
@@ -30,9 +29,9 @@ public class ScheduleInspectionServlet extends HttpServlet {
         String inspectionDate = request.getParameter("inspectionDate");
 
         // Xác thực dữ liệu đầu vào
-        if (vehicleIdStr == null || vehicleIdStr.trim().isEmpty()
-                || stationIdStr == null || stationIdStr.trim().isEmpty()
-                || inspectionDate == null || inspectionDate.trim().isEmpty()) {
+        if (vehicleIdStr == null || vehicleIdStr.trim().isEmpty() ||
+            stationIdStr == null || stationIdStr.trim().isEmpty() ||
+            inspectionDate == null || inspectionDate.trim().isEmpty()) {
             session.setAttribute("errorMessage", "Vui lòng điền đầy đủ thông tin lịch hẹn.");
             redirectToScheduleInspectionPage(request, response);
             return;

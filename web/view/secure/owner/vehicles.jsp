@@ -21,15 +21,17 @@
                     <h2>Vehicles</h2>
                     <div class="" id="vehicles">
                         <h3>My Vehicles <i class="fas fa-car"></i></h3>
+                            <c:if test="${not empty errorMessage}">
+                            <div class="alert alert-danger status-error" role="alert">
+                                <i class="fas fa-exclamation-circle"></i> ${errorMessage}
+                            </div>
+                            <c:set var="errorMessageDisplayed" value="true" scope="request" />
+                        </c:if>
                         <c:if test="${not empty successMessage}">
                             <div class="alert alert-success status-success" role="alert">
                                 <i class="fas fa-check-circle"></i> ${successMessage}
                             </div>
-                        </c:if>
-                        <c:if test="${not empty errorMessage}">
-                            <div class="alert alert-danger status-error" role="alert">
-                                <i class="fas fa-exclamation-circle"></i> ${errorMessage}
-                            </div>
+                            <c:set var="successMessageDisplayed" value="true" scope="request" />
                         </c:if>
 
                         <c:if test="${not empty vehicles and not empty vehicles}">
@@ -46,32 +48,32 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="vehicle" items="${vehicles}">
-                                    <tr>
-                                        <td>${vehicle.vehicleID}</td>
-                                        <td>${vehicle.plateNumber}</td>
-                                        <td>${vehicle.brand}</td>
-                                        <td>${vehicle.model}</td>
-                                        <td>${vehicle.manufactureYear}</td>
-                                        <td>${vehicle.engineNumber}</td>
-                                        <td>
-                                    <c:choose>
-                                        <c:when test="${vehicle.verificationStatus == 'Approved'}">
-                                            <span class="status-success">Approved</span>
-                                        </c:when>
-                                        <c:when test="${vehicle.verificationStatus == 'Pending'}">
-                                            <span class="status-pending">Pending</span>
-                                        </c:when>
-                                        <c:when test="${vehicle.verificationStatus == 'Rejected'}">
-                                            <span class="status-error">Rejected</span>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <span class="status-error">Not Verified</span>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    </td>
-                                    </tr>
-                                </c:forEach>
+                                    <c:forEach var="vehicle" items="${vehicles}">
+                                        <tr>
+                                            <td>${vehicle.vehicleID}</td>
+                                            <td>${vehicle.plateNumber}</td>
+                                            <td>${vehicle.brand}</td>
+                                            <td>${vehicle.model}</td>
+                                            <td>${vehicle.manufactureYear}</td>
+                                            <td>${vehicle.engineNumber}</td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${vehicle.verificationStatus == 'Approved'}">
+                                                        <span class="status-success">Approved</span>
+                                                    </c:when>
+                                                    <c:when test="${vehicle.verificationStatus == 'Pending'}">
+                                                        <span class="status-pending">Pending</span>
+                                                    </c:when>
+                                                    <c:when test="${vehicle.verificationStatus == 'Rejected'}">
+                                                        <span class="status-error">Rejected</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="status-error">Not Verified</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
                                 </tbody>
                             </table>
                         </c:if>

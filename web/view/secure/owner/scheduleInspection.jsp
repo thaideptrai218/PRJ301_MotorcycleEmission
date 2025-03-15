@@ -25,11 +25,13 @@
                             <div class="alert alert-danger status-error" role="alert">
                                 <i class="fas fa-exclamation-circle"></i> ${errorMessage}
                             </div>
+                            <c:set var="errorMessageDisplayed" value="true" scope="request" />
                         </c:if>
                         <c:if test="${not empty successMessage}">
                             <div class="alert alert-success status-success" role="alert">
                                 <i class="fas fa-check-circle"></i> ${successMessage}
                             </div>
+                            <c:set var="successMessageDisplayed" value="true" scope="request" />
                         </c:if>
                         <form action="${pageContext.request.contextPath}/owner/scheduleInspection" method="POST">
                             <div class="form-group">

@@ -20,18 +20,18 @@
                 <div class="container mt-4">
                     <h2>Track History</h2>
                     <div class="" id="track-history">
-                        <h3>Track History <i class="fas fa-clock"></i></h3>
-                            <c:if test="${not empty successMessage}">
-                            <div class="alert alert-success status-success" role="alert">
-                                <i class="fas fa-check-circle"></i> ${successMessage}
-                            </div>
-                        </c:if>
                         <c:if test="${not empty errorMessage}">
                             <div class="alert alert-danger status-error" role="alert">
                                 <i class="fas fa-exclamation-circle"></i> ${errorMessage}
                             </div>
+                            <c:set var="errorMessageDisplayed" value="true" scope="request" />
                         </c:if>
-
+                        <c:if test="${not empty successMessage}">
+                            <div class="alert alert-success status-success" role="alert">
+                                <i class="fas fa-check-circle"></i> ${successMessage}
+                            </div>
+                            <c:set var="successMessageDisplayed" value="true" scope="request" />
+                        </c:if>
                         <c:if test="${not empty inspectionRecords and not empty inspectionRecords}">
                             <table class="table table-bordered">
                                 <thead>
