@@ -11,18 +11,12 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
-@WebFilter("/owner/*")
+
 public class NotificationFilter implements Filter {
     private final NotificationDAO notificationDAO = new NotificationDAO();
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // Không cần khởi tạo gì đặc biệt
-    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

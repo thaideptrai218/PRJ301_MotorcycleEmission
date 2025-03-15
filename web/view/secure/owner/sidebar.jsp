@@ -27,6 +27,9 @@
             <a class="nav-link" href="${pageContext.request.contextPath}/owner/scheduleInspectionPage">Schedule Inspection</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/owner/inspectionRequests">Inspection Requests</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/owner/trackHistoryPage">Track History</a>
         </li>
         <li class="nav-item">
