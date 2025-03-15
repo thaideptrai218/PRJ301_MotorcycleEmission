@@ -4,6 +4,7 @@ import dao.VehicleDAO;
 import dao.VerificationDAO;
 import dao.NotificationDAO;
 import dao.LogDAO;
+import dao.RequestDAO;
 import model.Vehicle;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -12,12 +13,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.Request;
 
 public class AddVehicleServlet extends HttpServlet {
+
     private final VehicleDAO vehicleDAO = new VehicleDAO();
     private final VerificationDAO verificationDAO = new VerificationDAO();
     private final NotificationDAO notificationDAO = new NotificationDAO();
     private final LogDAO logDAO = new LogDAO();
+    private final RequestDAO requestDAO = new RequestDAO();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,11 +36,11 @@ public class AddVehicleServlet extends HttpServlet {
         String engineNumber = request.getParameter("engineNumber");
 
         // Xác thực dữ liệu đầu vào
-        if (plateNumber == null || plateNumber.trim().isEmpty() ||
-            brand == null || brand.trim().isEmpty() ||
-            model == null || model.trim().isEmpty() ||
-            manufactureYearStr == null || manufactureYearStr.trim().isEmpty() ||
-            engineNumber == null || engineNumber.trim().isEmpty()) {
+        if (plateNumber == null || plateNumber.trim().isEmpty()
+                || brand == null || brand.trim().isEmpty()
+                || model == null || model.trim().isEmpty()
+                || manufactureYearStr == null || manufactureYearStr.trim().isEmpty()
+                || engineNumber == null || engineNumber.trim().isEmpty()) {
             session.setAttribute("errorMessage", "Vui lòng điền đầy đủ thông tin phương tiện.");
             redirectToAddVehiclePage(request, response);
             return;
@@ -97,6 +101,23 @@ public class AddVehicleServlet extends HttpServlet {
                 session.setAttribute("errorMessage", "Thêm phương tiện thành công nhưng không thể gửi thông báo.");
                 redirectToAddVehiclePage(request, response);
                 return;
+            }
+
+            Request ownerRequest = new Request();
+            ownerRequest.setCreatedBy(ownerId);
+            ownerRequest.setVehicleID(vehicleId);
+            ownerRequest.setType("VehicleVerification"); // Sử dụng giá trị hợp lệ theo ràng buộc CHECK
+            ownerRequest.setMessage("Yêu cầu xác thực xe máy."); // Gán giá trị cho Message (bắt buộc)
+            ownerRequest.setStatus("Pending");
+            ownerRequest.setPriority("High");
+
+            try {
+                requestDAO.addRequest(ownerRequest);
+                session.setAttribute("successMessage", "Yêu cầu đã được gửi thành công.");
+            } catch (SQLException e) {
+                // Ghi log chi tiết lỗi để dễ debug
+                e.printStackTrace();
+                session.setAttribute("errorMessage", "Lỗi khi gửi yêu cầu: " + e.getMessage());
             }
 
             // Cập nhật danh sách xe trong session

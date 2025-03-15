@@ -67,6 +67,10 @@
     </filter>
     <filter-mapping>
         <filter-name>RoleFilter</filter-name>
+        <url-pattern>/owner/*</url-pattern>
+        <url-pattern>/inspector/*</url-pattern>
+        <url-pattern>/station/*</url-pattern>
+        <url-pattern>/police/*</url-pattern>
         <url-pattern>/view/secure/*</url-pattern>
     </filter-mapping>
     <filter>
