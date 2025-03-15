@@ -16,7 +16,7 @@
     <!-- Servlet Mappings -->
     <servlet>
         <servlet-name>AddVehicleServlet</servlet-name>
-        <servlet-class>controller.AddVehicleServlet</servlet-class>
+        <servlet-class>controller.owner.AddVehicleServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>OwnerDashboardServlet</servlet-name>
@@ -69,6 +69,71 @@
         <servlet-name>InitServlet</servlet-name>
         <url-pattern>/init</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>HomeServlet</servlet-name>
+        <servlet-class>controller.owner.HomeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HomeServlet</servlet-name>
+        <url-pattern>/owner/home</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AddVehiclePageServlet</servlet-name>
+        <servlet-class>controller.owner.AddVehiclePageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddVehiclePageServlet</servlet-name>
+        <url-pattern>/owner/addVehiclePage</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ScheduleInspectionPageServlet</servlet-name>
+        <servlet-class>controller.owner.ScheduleInspectionPageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ScheduleInspectionPageServlet</servlet-name>
+        <url-pattern>/owner/scheduleInspectionPage</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>TrackHistoryPageServlet</servlet-name>
+        <servlet-class>controller.owner.TrackHistoryPageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TrackHistoryPageServlet</servlet-name>
+        <url-pattern>/owner/trackHistoryPage</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AddVehicleServlet</servlet-name>
+        <servlet-class>controller.owner.AddVehicleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddVehicleServlet</servlet-name>
+        <url-pattern>/owner/addVehicle</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ScheduleInspectionServlet</servlet-name>
+        <servlet-class>controller.owner.ScheduleInspectionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ScheduleInspectionServlet</servlet-name>
+        <url-pattern>/owner/scheduleInspection</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>VehiclesPageServlet</servlet-name>
+        <servlet-class>controller.owner.VehiclesPageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VehiclesPageServlet</servlet-name>
+        <url-pattern>/owner/vehiclesPage</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>default</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/assets/*</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>/index.html</welcome-file>
     </welcome-file-list>

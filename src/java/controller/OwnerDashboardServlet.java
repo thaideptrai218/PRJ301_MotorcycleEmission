@@ -6,7 +6,6 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 import model.Vehicle;
-
 public class OwnerDashboardServlet extends HttpServlet {
 
     private final VehicleDAO vehicleDAO = new VehicleDAO();
@@ -25,6 +24,6 @@ public class OwnerDashboardServlet extends HttpServlet {
         List<Vehicle> vehicles = vehicleDAO.getVehiclesByOwnerId(userId);
         session.setAttribute("vehicles", vehicles);
 
-        request.getRequestDispatcher("/view/secure/ownerDashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/owner/home").forward(request, response);
     }
 }

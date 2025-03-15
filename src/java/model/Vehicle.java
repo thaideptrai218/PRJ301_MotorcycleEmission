@@ -1,28 +1,15 @@
 package model;
 
 public class Vehicle {
+
     private int vehicleID;
     private int ownerID;
     private String plateNumber;
     private String brand;
     private String model;
-    private int manufactureYear; // Giữ int, tương ứng với YEAR trong SQL Server
+    private int manufactureYear;
     private String engineNumber;
-
-    // Constructor không tham số
-    public Vehicle() {
-    }
-
-    // Constructor đầy đủ tham số
-    public Vehicle(int vehicleID, int ownerID, String plateNumber, String brand, String model, int manufactureYear, String engineNumber) {
-        this.vehicleID = vehicleID;
-        this.ownerID = ownerID;
-        this.plateNumber = plateNumber;
-        this.brand = brand;
-        this.model = model;
-        this.manufactureYear = manufactureYear;
-        this.engineNumber = engineNumber;
-    }
+    private String verificationStatus;
 
     // Getters và Setters
     public int getVehicleID() {
@@ -70,11 +57,7 @@ public class Vehicle {
     }
 
     public void setManufactureYear(int manufactureYear) {
-        if (manufactureYear >= 1900 && manufactureYear <= 9999) {
-            this.manufactureYear = manufactureYear;
-        } else {
-            throw new IllegalArgumentException("Manufacture year must be between 1900 and 9999");
-        }
+        this.manufactureYear = manufactureYear;
     }
 
     public String getEngineNumber() {
@@ -83,5 +66,13 @@ public class Vehicle {
 
     public void setEngineNumber(String engineNumber) {
         this.engineNumber = engineNumber;
+    }
+
+    public String getVerificationStatus() {
+        return verificationStatus;
+    }
+
+    public void setVerificationStatus(String verificationStatus) {
+        this.verificationStatus = verificationStatus;
     }
 }

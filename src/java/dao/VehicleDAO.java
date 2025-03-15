@@ -7,14 +7,15 @@ import java.util.List;
 import utils.DBConnection;
 
 public class VehicleDAO {
-    private Connection conn;
+
+    private final Connection conn;
 
     public VehicleDAO() {
-        conn = new DBConnection().getConnection(); // Giả định DBConnection cung cấp kết nối
+        this.conn = new DBConnection().getConnection();
     }
 
-    public boolean addVehicle(Vehicle vehicle) {
-        String sql = "INSERT INTO Vehicles (ownerID, plateNumber, brand, model, manufactureYear, engineNumber) VALUES (?, ?, ?, ?, ?, ?)";
+    public int addVehicle(Vehicle vehicle) throws SQLException {
+        String sql = "INSERT INTO Vehicles (OwnerID, PlateNumber, Brand, Model, ManufactureYear, EngineNumber) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, vehicle.getOwnerID());
             pstmt.setString(2, vehicle.getPlateNumber());
@@ -23,32 +24,66 @@ public class VehicleDAO {
             pstmt.setInt(5, vehicle.getManufactureYear());
             pstmt.setString(6, vehicle.getEngineNumber());
             int rowsAffected = pstmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+
+            if (rowsAffected > 0) {
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1); // Trả về vehicleId
+                    }
+                }
+            }
+            return -1; // Trả về -1 nếu thất bại
         }
     }
 
-    public List<Vehicle> getVehiclesByOwnerId(int ownerID) {
+    public List<Vehicle> getVehiclesByOwnerId(int ownerId) {
         List<Vehicle> vehicles = new ArrayList<>();
-        String sql = "SELECT * FROM Vehicles WHERE ownerID = ?";
+        String sql = "SELECT * FROM Vehicles WHERE OwnerID = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, ownerID);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                Vehicle vehicle = new Vehicle();
-                vehicle.setVehicleID(rs.getInt("vehicleID"));
-                vehicle.setOwnerID(rs.getInt("ownerID"));
-                vehicle.setPlateNumber(rs.getString("plateNumber"));
-                vehicle.setBrand(rs.getString("brand"));
-                vehicle.setModel(rs.getString("model"));
-                vehicle.setManufactureYear(rs.getInt("manufactureYear"));
-                vehicle.setEngineNumber(rs.getString("engineNumber"));
-                vehicles.add(vehicle);
+            pstmt.setInt(1, ownerId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Vehicle vehicle = new Vehicle();
+                    vehicle.setVehicleID(rs.getInt("VehicleID"));
+                    vehicle.setOwnerID(rs.getInt("OwnerID"));
+                    vehicle.setPlateNumber(rs.getString("PlateNumber"));
+                    vehicle.setBrand(rs.getString("Brand"));
+                    vehicle.setModel(rs.getString("Model"));
+                    vehicle.setManufactureYear(rs.getInt("ManufactureYear"));
+                    vehicle.setEngineNumber(rs.getString("EngineNumber"));
+                    vehicles.add(vehicle);
+                }
+
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+        }
+        return vehicles;
+    }
+
+    public List<Vehicle> getVehiclesByOwnerIdWithVerificationStatus(int ownerId) throws SQLException {
+        List<Vehicle> vehicles = new ArrayList<>();
+        String sql = "SELECT v.*, vr.Status AS VerificationStatus "
+                + "FROM Vehicles v "
+                + "LEFT JOIN VerificationRecords vr ON v.VehicleID = vr.VehicleID "
+                + "WHERE v.OwnerID = ? "
+                + "ORDER BY v.VehicleID DESC";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, ownerId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Vehicle vehicle = new Vehicle();
+                    vehicle.setVehicleID(rs.getInt("VehicleID"));
+                    vehicle.setOwnerID(rs.getInt("OwnerID"));
+                    vehicle.setPlateNumber(rs.getString("PlateNumber"));
+                    vehicle.setBrand(rs.getString("Brand"));
+                    vehicle.setModel(rs.getString("Model"));
+                    vehicle.setManufactureYear(rs.getInt("ManufactureYear"));
+                    vehicle.setEngineNumber(rs.getString("EngineNumber"));
+                    vehicle.setVerificationStatus(rs.getString("VerificationStatus"));
+                    vehicles.add(vehicle);
+                }
+            }
         }
         return vehicles;
     }

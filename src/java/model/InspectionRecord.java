@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class InspectionRecord {
@@ -9,27 +10,12 @@ public class InspectionRecord {
     private int stationID;
     private int inspectorID;
     private LocalDateTime inspectionDate;
-    private String result; // "Pass" or "Fail"
-    private double co2Emission; // DECIMAL ánh xạ thành double
+    private String result;
+    private double co2Emission;
     private double hcEmission;
     private String comments;
-
-    // Constructor
-    public InspectionRecord() {
-    }
-
-    public InspectionRecord(int recordID, int vehicleID, int stationID, int inspectorID, LocalDateTime inspectionDate,
-            String result, double co2Emission, double hcEmission, String comments) {
-        this.recordID = recordID;
-        this.vehicleID = vehicleID;
-        this.stationID = stationID;
-        this.inspectorID = inspectorID;
-        this.inspectionDate = inspectionDate;
-        this.result = result;
-        this.co2Emission = co2Emission;
-        this.hcEmission = hcEmission;
-        this.comments = comments;
-    }
+    private LocalDate expirationDate;
+    private String status;
 
     // Getters và Setters
     public int getRecordID() {
@@ -80,19 +66,19 @@ public class InspectionRecord {
         this.result = result;
     }
 
-    public double getCo2Emission() {
+    public double getCO2Emission() {
         return co2Emission;
     }
 
-    public void setCo2Emission(double co2Emission) {
+    public void setCO2Emission(double co2Emission) {
         this.co2Emission = co2Emission;
     }
 
-    public double getHcEmission() {
+    public double getHCEmission() {
         return hcEmission;
     }
 
-    public void setHcEmission(double hcEmission) {
+    public void setHCEmission(double hcEmission) {
         this.hcEmission = hcEmission;
     }
 
@@ -102,5 +88,21 @@ public class InspectionRecord {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
