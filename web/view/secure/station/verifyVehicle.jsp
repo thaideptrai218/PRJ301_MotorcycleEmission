@@ -13,6 +13,11 @@
     <div class="container mt-4">
         <h2>Xác Minh Yêu Cầu Xe</h2>
 
+        <!-- Nút Quay lại (trên cùng) -->
+        <div class="mb-3">
+            <a href="${pageContext.request.contextPath}/station/dashboard" class="btn btn-secondary">Quay lại</a>
+        </div>
+
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger">${errorMessage}</div>
             <c:remove var="errorMessage" scope="session" />
@@ -133,6 +138,11 @@
                         </c:if>
                     </ul>
                 </nav>
+
+                <!-- Nút Quay lại (dưới phân trang) -->
+                <div class="mt-3">
+                    <a href="${pageContext.request.contextPath}/station/home" class="btn btn-secondary">Quay lại</a>
+                </div>
             </c:otherwise>
         </c:choose>
 
