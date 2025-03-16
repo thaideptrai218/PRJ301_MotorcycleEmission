@@ -39,6 +39,14 @@
         <servlet-name>InspectionRequestPageServlet</servlet-name>
         <servlet-class>controller.owner.InspectionRequestPageServlet</servlet-class>
     </servlet>
+    <filter>
+        <filter-name>WorkplaceFilter</filter-name>
+        <filter-class>filter.WorkplaceFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>WorkplaceFilter</filter-name>
+        <url-pattern>/station/*</url-pattern>
+    </filter-mapping>
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
         <url-pattern>/register</url-pattern>

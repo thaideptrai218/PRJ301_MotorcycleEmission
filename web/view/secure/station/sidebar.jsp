@@ -20,12 +20,12 @@
         <li class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/station/requests">Add Vehicle</a>
         </li><!--
-        <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/owner/vehiclesPage">Vehicles</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/owner/scheduleInspectionPage">Schedule Inspection</a>
-        </li>
+-->        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/station/chooseWorkplace">Choose Workplace</a>
+        </li><!--
+-->        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/station/verifyVehicle">Verify Vehicle</a>
+        </li><!--
         <li class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/owner/inspectionRequests">Inspection Requests</a>
         </li>

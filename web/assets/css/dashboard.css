@@ -17,9 +17,9 @@ body {
 }
 
 .content {
-    margin-left: 300px;
+    margin: 62px auto;
+    max-width: calc(100vw - 300px);
     padding: 20px;
-    margin-top: 62px; /* Để tránh chồng lấn với navbar */
 }
 .sidebar-toggle {
     position: fixed;

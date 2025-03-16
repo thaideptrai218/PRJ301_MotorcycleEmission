@@ -39,18 +39,7 @@
             <!-- JavaScript -->
             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-            <script>
-                $(document).ready(function () {
-                    $('#sidebarToggle').on('click', function () {
-                        $('#sidebar').toggleClass('active');
-                        if ($('#sidebar').hasClass('active')) {
-                            $('.sidebar').css('display', 'block');
-                        } else {
-                            $('.sidebar').css('display', 'none');
-                        }
-                    });
-                });
-            </script>
+            <script src="${pageContext.request.contextPath}/assets/js/hambergurButton.js"></script>
         </div>
     </body>
 </html>
