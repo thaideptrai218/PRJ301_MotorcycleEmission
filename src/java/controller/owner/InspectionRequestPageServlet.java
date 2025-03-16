@@ -27,15 +27,14 @@ public class InspectionRequestPageServlet extends HttpServlet {
 
         try {
             // Lấy danh sách Inspection Schedules của Owner
-            List<InspectionSchedule> inspectionSchedules = inspectionScheduleDAO.getInspectionSchedulesByOwnerId(ownerId);
+            List<InspectionSchedule> inspectionSchedules = inspectionScheduleDAO.getScheduleByUserID(ownerId);
             request.setAttribute("inspectionSchedules", inspectionSchedules);
 
             // Forward đến trang inspectionrequest.jsp
             request.getRequestDispatcher("/view/secure/owner/inspectionRequest.jsp").forward(request, response);
+        
         } catch (SQLException e) {
             e.printStackTrace();
-            session.setAttribute("errorMessage", "Lỗi khi tải danh sách yêu cầu kiểm định: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/owner/dashboard");
         }
     }
 }

@@ -15,11 +15,11 @@
     <hr class="bg-light">
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/owner/home">Home</a>
+            <a class="nav-link" href="${pageContext.request.contextPath}/station/home">Home</a>
         </li>
-<!--        <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/owner/addVehiclePage">Add Vehicle</a>
-        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/station/requests">Add Vehicle</a>
+        </li><!--
         <li class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/owner/vehiclesPage">Vehicles</a>
         </li>

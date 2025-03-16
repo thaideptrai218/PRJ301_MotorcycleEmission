@@ -1,11 +1,13 @@
 package controller.owner;
 
 import dao.VehicleDAO;
-import dao.VerificationDAO;
+import dao.VerificationRecordDAO;
 import dao.NotificationDAO;
 import dao.LogDAO;
 import dao.RequestDAO;
 import model.Vehicle;
+import model.VerificationRecord;
+import model.Request;
 import java.io.IOException;
 import java.sql.SQLException;
 import jakarta.servlet.ServletException;
@@ -13,12 +15,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import model.Request;
 
 public class AddVehicleServlet extends HttpServlet {
 
     private final VehicleDAO vehicleDAO = new VehicleDAO();
-    private final VerificationDAO verificationDAO = new VerificationDAO();
+    private final VerificationRecordDAO verificationRecordDAO = new VerificationRecordDAO();
     private final NotificationDAO notificationDAO = new NotificationDAO();
     private final LogDAO logDAO = new LogDAO();
     private final RequestDAO requestDAO = new RequestDAO();
@@ -28,115 +29,88 @@ public class AddVehicleServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Integer ownerId = (Integer) session.getAttribute("userId");
 
-        // Lấy dữ liệu từ form
+        if (ownerId == null) {
+            session.setAttribute("errorMessage", "Vui lòng đăng nhập.");
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         String plateNumber = request.getParameter("plateNumber");
         String brand = request.getParameter("brand");
         String model = request.getParameter("model");
         String manufactureYearStr = request.getParameter("manufactureYear");
         String engineNumber = request.getParameter("engineNumber");
 
-        // Xác thực dữ liệu đầu vào
         if (plateNumber == null || plateNumber.trim().isEmpty()
                 || brand == null || brand.trim().isEmpty()
                 || model == null || model.trim().isEmpty()
                 || manufactureYearStr == null || manufactureYearStr.trim().isEmpty()
                 || engineNumber == null || engineNumber.trim().isEmpty()) {
-            session.setAttribute("errorMessage", "Vui lòng điền đầy đủ thông tin phương tiện.");
-            redirectToAddVehiclePage(request, response);
+            session.setAttribute("errorMessage", "Vui lòng điền đầy đủ thông tin.");
+            response.sendRedirect(request.getContextPath() + "/owner/addVehiclePage");
             return;
         }
 
-        int manufactureYear;
         try {
-            manufactureYear = Integer.parseInt(manufactureYearStr);
-            if (manufactureYear < 1900 || manufactureYear > 9999) {
-                session.setAttribute("errorMessage", "Năm sản xuất không hợp lệ.");
-                redirectToAddVehiclePage(request, response);
-                return;
-            }
-        } catch (NumberFormatException e) {
-            session.setAttribute("errorMessage", "Năm sản xuất phải là một số hợp lệ.");
-            redirectToAddVehiclePage(request, response);
-            return;
-        }
+            int manufactureYear = Integer.parseInt(manufactureYearStr);
 
-        // Tạo đối tượng Vehicle
-        Vehicle vehicle = new Vehicle();
-        vehicle.setOwnerID(ownerId);
-        vehicle.setPlateNumber(plateNumber);
-        vehicle.setBrand(brand);
-        vehicle.setModel(model);
-        vehicle.setManufactureYear(manufactureYear);
-        vehicle.setEngineNumber(engineNumber);
-
-        try {
-            // Thêm phương tiện vào cơ sở dữ liệu
+            // Tạo và thêm Vehicle
+            Vehicle vehicle = new Vehicle();
+            vehicle.setOwnerID(ownerId);
+            vehicle.setPlateNumber(plateNumber);
+            vehicle.setBrand(brand);
+            vehicle.setModel(model);
+            vehicle.setManufactureYear(manufactureYear);
+            vehicle.setEngineNumber(engineNumber);
             int vehicleId = vehicleDAO.addVehicle(vehicle);
+
             if (vehicleId == -1) {
-                session.setAttribute("errorMessage", "Không thể thêm phương tiện. Vui lòng thử lại.");
-                redirectToAddVehiclePage(request, response);
-                return;
+                throw new SQLException("Không thể thêm phương tiện.");
             }
 
-            // Thêm bản ghi xác minh
-            boolean verificationAdded = verificationDAO.addVerification(vehicleId);
-            if (!verificationAdded) {
-                session.setAttribute("errorMessage", "Thêm phương tiện thành công nhưng không thể tạo yêu cầu xác minh.");
-                redirectToAddVehiclePage(request, response);
-                return;
-            }
+            // Tạo VerificationRecord
+            VerificationRecord verificationRecord = new VerificationRecord();
+            verificationRecord.setVehicleID(vehicleId);
+            verificationRecord.setStatus("Pending");
+            verificationRecordDAO.addVerification(vehicleId); // Tạo bản ghi với RequestID NULL ban đầu
 
-            // Ghi log
-            boolean logAdded = logDAO.addLog(ownerId, "Add Vehicle");
-            if (!logAdded) {
-                session.setAttribute("errorMessage", "Thêm phương tiện thành công nhưng không thể ghi log.");
-                redirectToAddVehiclePage(request, response);
-                return;
-            }
-
-            // Gửi thông báo
-            String message = "Phương tiện của bạn (" + plateNumber + ") đã được thêm và đang chờ xác minh.";
-            boolean notificationAdded = notificationDAO.addNotification(ownerId, message, "Result");
-            if (!notificationAdded) {
-                session.setAttribute("errorMessage", "Thêm phương tiện thành công nhưng không thể gửi thông báo.");
-                redirectToAddVehiclePage(request, response);
-                return;
-            }
-
+            // Tạo Request
             Request ownerRequest = new Request();
             ownerRequest.setCreatedBy(ownerId);
+            ownerRequest.setAssignedTo(null); // Chưa gán Station
             ownerRequest.setVehicleID(vehicleId);
-            ownerRequest.setType("VehicleVerification"); // Sử dụng giá trị hợp lệ theo ràng buộc CHECK
-            ownerRequest.setMessage("Yêu cầu xác thực xe máy."); // Gán giá trị cho Message (bắt buộc)
+            ownerRequest.setType("VehicleVerification");
+            ownerRequest.setMessage("Yêu cầu xác thực xe máy với biển số " + plateNumber + ".");
             ownerRequest.setStatus("Pending");
             ownerRequest.setPriority("High");
+            int requestId = requestDAO.addRequest(ownerRequest);
 
-            try {
-                requestDAO.addRequest(ownerRequest);
-                session.setAttribute("successMessage", "Yêu cầu đã được gửi thành công.");
-            } catch (SQLException e) {
-                // Ghi log chi tiết lỗi để dễ debug
-                e.printStackTrace();
-                session.setAttribute("errorMessage", "Lỗi khi gửi yêu cầu: " + e.getMessage());
-            }
+            // Cập nhật VerificationRecord với RequestID (nếu cần)
+            verificationRecord.setRequestID(requestId);
+            verificationRecordDAO.addVerificationRecord(verificationRecord);
 
-            // Cập nhật danh sách xe trong session
-            session.setAttribute("vehicles", vehicleDAO.getVehiclesByOwnerId(ownerId));
+            // Gửi thông báo
+            String ownerMessage = "Phương tiện của bạn (" + plateNumber + ") đã được thêm và đang chờ xác minh.";
+            notificationDAO.addNotification(ownerId, ownerMessage, "Result");
+
+            // Ghi log
+            logDAO.addLog(ownerId, "Thêm Phương Tiện");
+
+            // Chuyển hướng thành công
             session.setAttribute("successMessage", "Phương tiện đã được thêm thành công và đang chờ xác minh.");
-            redirectToAddVehiclePage(request, response);
+            response.sendRedirect(request.getContextPath() + "/owner/addVehiclePage");
 
+        } catch (NumberFormatException e) {
+            session.setAttribute("errorMessage", "Năm sản xuất phải là một số hợp lệ.");
+            response.sendRedirect(request.getContextPath() + "/owner/addVehiclePage");
         } catch (SQLException e) {
             e.printStackTrace();
             session.setAttribute("errorMessage", "Lỗi cơ sở dữ liệu: " + e.getMessage());
-            redirectToAddVehiclePage(request, response);
+            response.sendRedirect(request.getContextPath() + "/owner/addVehiclePage");
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("errorMessage", "Đã xảy ra lỗi: " + e.getMessage());
-            redirectToAddVehiclePage(request, response);
+            response.sendRedirect(request.getContextPath() + "/owner/addVehiclePage");
         }
-    }
-
-    private void redirectToAddVehiclePage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect(request.getContextPath() + "/owner/addVehiclePage");
     }
 }

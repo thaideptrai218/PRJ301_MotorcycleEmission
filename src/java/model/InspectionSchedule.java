@@ -3,18 +3,16 @@ package model;
 import java.util.Date;
 
 public class InspectionSchedule {
+    private String plateNumber;
+    private String stationName;
     private int scheduleID;
     private int vehicleID;
     private int stationID;
     private int ownerID;
     private Date scheduleDate;
-    private String status;
+    private String status; // "Pending", "Confirmed", "Completed", "Cancelled"
     private Date createdAt;
-    private String plateNumber; // Thêm trường PlateNumber từ Vehicles
-    private String stationName; // Thêm trường Name từ InspectionStations
-
-    // Constructor mặc định
-    public InspectionSchedule() {}
+    private Integer requestID; // Thêm thuộc tính mới
 
     // Getters và Setters
     public int getScheduleID() { return scheduleID; }
@@ -31,8 +29,24 @@ public class InspectionSchedule {
     public void setStatus(String status) { this.status = status; }
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
-    public String getPlateNumber() { return plateNumber; }
-    public void setPlateNumber(String plateNumber) { this.plateNumber = plateNumber; }
-    public String getStationName() { return stationName; }
-    public void setStationName(String stationName) { this.stationName = stationName; }
+    public Integer getRequestID() { return requestID; }
+    public void setRequestID(Integer requestID) { this.requestID = requestID; }
+
+    public String getPlateNumber() {
+        return plateNumber;
+    }
+
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
+    }
+
+    public String getStationName() {
+        return stationName;
+    }
+
+    public void setStationName(String stationName) {
+        this.stationName = stationName;
+    }
+    
+    
 }
