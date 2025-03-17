@@ -91,7 +91,7 @@ public class AddVehicleServlet extends HttpServlet {
 
             // Gửi thông báo
             String ownerMessage = "Phương tiện của bạn (" + plateNumber + ") đã được thêm và đang chờ xác minh.";
-            notificationDAO.addNotification(ownerId, ownerMessage, "Result");
+            notificationDAO.addNotification(ownerId, ownerMessage, "Request");
 
             // Ghi log
             logDAO.addLog(ownerId, "Thêm Phương Tiện");

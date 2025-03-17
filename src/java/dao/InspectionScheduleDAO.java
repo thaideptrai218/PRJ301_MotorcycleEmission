@@ -125,4 +125,13 @@ public class InspectionScheduleDAO {
             pstmt.executeUpdate();
         }
     }
+    
+    public void updateStatusByRequestId(int requestId, String status) throws SQLException {
+        String sql = "UPDATE InspectionSchedules SET Status = ? WHERE RequestID = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, status);
+            pstmt.setInt(2, requestId);
+            pstmt.executeUpdate();
+        }
+    }
 }

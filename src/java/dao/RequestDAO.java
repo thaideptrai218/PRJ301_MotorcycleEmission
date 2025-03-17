@@ -102,6 +102,15 @@ public class RequestDAO {
         }
     }
 
+    public void updateRequestStatus(int requestId, String status) throws SQLException {
+        String sql = "UPDATE Requests SET Status = ?, UpdatedAt = GETDATE() WHERE RequestID = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, status);
+            pstmt.setInt(2, requestId);
+            pstmt.executeUpdate();
+        }
+    }
+
     // Lấy tất cả yêu cầu VehicleVerification với bộ lọc và phân trang
     public List<Request> getVehicleVerificationRequests(String status, String searchKeyword, String fromDate, String toDate, String sortBy, String sortOrder, int page, int pageSize) throws SQLException {
         List<Request> requests = new ArrayList<>();
@@ -184,6 +193,111 @@ public class RequestDAO {
         }
         if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
             sql.append(" AND (Message LIKE ? OR CAST(VehicleID AS NVARCHAR) LIKE ?)");
+            params.add("%" + searchKeyword + "%");
+            params.add("%" + searchKeyword + "%");
+        }
+        if (fromDate != null && !fromDate.trim().isEmpty()) {
+            sql.append(" AND CreateDate >= ?");
+            params.add(fromDate);
+        }
+        if (toDate != null && !toDate.trim().isEmpty()) {
+            sql.append(" AND CreateDate <= ?");
+            params.add(toDate + " 23:59:59");
+        }
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public List<Request> getInspectionScheduleRequests(String status, String searchKeyword, String fromDate, String toDate, String sortBy, String sortOrder, int page, int pageSize) throws SQLException {
+        List<Request> requests = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM Requests WHERE Type = 'InspectionSchedule'");
+        List<Object> params = new ArrayList<>();
+
+        // Bộ lọc trạng thái
+        if (status != null && !status.trim().isEmpty()) {
+            sql.append(" AND Status = ?");
+            params.add(status);
+        }
+
+        // Tìm kiếm theo Message hoặc CreatedBy
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            sql.append(" AND (Message LIKE ? OR CAST(CreatedBy AS NVARCHAR) LIKE ?)");
+            params.add("%" + searchKeyword + "%");
+            params.add("%" + searchKeyword + "%");
+        }
+
+        // Bộ lọc theo ngày tạo
+        if (fromDate != null && !fromDate.trim().isEmpty()) {
+            sql.append(" AND CreateDate >= ?");
+            params.add(fromDate);
+        }
+        if (toDate != null && !toDate.trim().isEmpty()) {
+            sql.append(" AND CreateDate <= ?");
+            params.add(toDate + " 23:59:59");
+        }
+
+        // Sắp xếp
+        if (sortBy != null && !sortBy.trim().isEmpty()) {
+            sql.append(" ORDER BY ");
+            if ("createDate".equals(sortBy)) {
+                sql.append("CreateDate");
+            } else if ("createdBy".equals(sortBy)) {
+                sql.append("CreatedBy");
+            }
+            sql.append(" ").append("asc".equalsIgnoreCase(sortOrder) ? "ASC" : "DESC");
+        } else {
+            sql.append(" ORDER BY CreateDate DESC");
+        }
+
+        // Phân trang
+        sql.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        params.add((page - 1) * pageSize);
+        params.add(pageSize);
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Request request = new Request();
+                    request.setRequestID(rs.getInt("RequestID"));
+                    request.setCreatedBy(rs.getInt("CreatedBy"));
+                    request.setAssignedTo(rs.getObject("AssignedTo") != null ? rs.getInt("AssignedTo") : null);
+                    request.setType(rs.getString("Type"));
+                    request.setMessage(rs.getString("Message"));
+                    request.setStatus(rs.getString("Status"));
+                    request.setPriority(rs.getString("Priority"));
+                    request.setCreateDate(rs.getTimestamp("CreateDate"));
+                    request.setUpdatedAt(rs.getTimestamp("UpdatedAt"));
+                    requests.add(request);
+                }
+            }
+        }
+        return requests;
+    }
+
+    // Đếm tổng số yêu cầu InspectionSchedule để hỗ trợ phân trang
+    public int countInspectionScheduleRequests(String status, String searchKeyword, String fromDate, String toDate) throws SQLException {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Requests WHERE Type = 'InspectionSchedule'");
+        List<Object> params = new ArrayList<>();
+
+        if (status != null && !status.trim().isEmpty()) {
+            sql.append(" AND Status = ?");
+            params.add(status);
+        }
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            sql.append(" AND (Message LIKE ? OR CAST(CreatedBy AS NVARCHAR) LIKE ?)");
             params.add("%" + searchKeyword + "%");
             params.add("%" + searchKeyword + "%");
         }

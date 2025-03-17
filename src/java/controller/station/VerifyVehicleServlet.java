@@ -1,5 +1,6 @@
 package controller.station;
 
+import dao.NotificationDAO;
 import dao.RequestDAO;
 import dao.UserDAO;
 import dao.VehicleDAO;
@@ -25,13 +26,13 @@ public class VerifyVehicleServlet extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
     private final VehicleDAO vehicleDAO = new VehicleDAO();
     private final VerificationRecordDAO verificationRecordDAO = new VerificationRecordDAO();
+    private final NotificationDAO notificationDAO = new NotificationDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         Integer userId = (Integer) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
-
 
         // Lấy các tham số bộ lọc từ request
         String statusFilter = request.getParameter("statusFilter");
@@ -149,7 +150,9 @@ public class VerifyVehicleServlet extends HttpServlet {
                     record.setStatus("Approved");
                     verificationRecordDAO.updateStatus(record.getVerificationID(), "Approved");
                 }
-
+                Vehicle ownerVehicle = vehicleDAO.getVehicleById(requestObj.getVehicleID());
+                String ownerMessage = "Phương tiện của bạn (" + ownerVehicle.getPlateNumber() + ") đã được xác minh";
+                notificationDAO.addNotification(requestObj.getCreatedBy() , ownerMessage, "Result");
                 session.setAttribute("successMessage", "Yêu cầu xác minh xe đã được chấp thuận.");
 
             } else if ("reject".equals(action)) {
@@ -162,6 +165,11 @@ public class VerifyVehicleServlet extends HttpServlet {
                 }
 
                 session.setAttribute("successMessage", "Yêu cầu xác minh xe đã bị từ chối.");
+                
+                Vehicle ownerVehicle = vehicleDAO.getVehicleById(requestObj.getVehicleID());
+                String ownerMessage = "Phương tiện của bạn (" + ownerVehicle.getPlateNumber() + ") đã bị từ chối";
+                notificationDAO.addNotification(requestObj.getCreatedBy() , ownerMessage, "Result");
+                session.setAttribute("successMessage", "Yêu cầu xác minh xe đã được chấp thuận.");
             }
 
         } catch (SQLException e) {
