@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class WorkplaceFilter implements Filter {
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -20,6 +21,12 @@ public class WorkplaceFilter implements Filter {
         HttpSession session = httpRequest.getSession(false);
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         
+        if (session == null || session.getAttribute("role") == null) {
+            // Nếu chưa đăng nhập, chuyển hướng về trang đăng nhập
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/view/signin.jsp");
+            return;
+        }
+
         if (path.equals("/station/chooseWorkplace") || path.equals("/login") || path.equals("/logout")) {
             chain.doFilter(request, response);
             return;
@@ -35,6 +42,10 @@ public class WorkplaceFilter implements Filter {
                 httpResponse.sendRedirect(httpRequest.getContextPath() + "/station/chooseWorkplace");
                 return;
             }
+        } else if (session == null || session.getAttribute("userId") == null) {
+            // Chưa đăng nhập, chuyển hướng về signin.jsp
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/view/signin.jsp");
+            return;
         }
 
         chain.doFilter(request, response);

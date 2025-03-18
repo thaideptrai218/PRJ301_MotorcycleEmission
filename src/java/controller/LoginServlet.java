@@ -47,7 +47,7 @@ public class LoginServlet extends HttpServlet {
                     redirectUrl = "/ownerDashboard";
                     break;
                 case "Inspector":
-                    redirectUrl = "/view/secure/inspectorDashboard.jsp";
+                    redirectUrl = "/inspectorDashboard";
                     break;
                 case "Station":
                     redirectUrl = "/stationDashboard";

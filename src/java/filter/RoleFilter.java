@@ -43,7 +43,8 @@ public class RoleFilter implements Filter {
 
         // Nếu không có quyền, chuyển hướng về trang lỗi hoặc signin
         if (!isAuthorized) {
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/view/error.jsp");
+            request.setAttribute("loginError", "Vui lòng đăng nhập theo đúng role");
+            request.getRequestDispatcher("/view/signin.jsp").forward(request, response);
             return;
         }
 

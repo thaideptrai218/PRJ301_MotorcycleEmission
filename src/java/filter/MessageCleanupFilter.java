@@ -12,12 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class MessageCleanupFilter implements Filter {
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // Không cần khởi tạo gì đặc biệt
-    }
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -52,10 +46,5 @@ public class MessageCleanupFilter implements Filter {
         } else {
             chain.doFilter(request, response);
         }
-    }
-
-    @Override
-    public void destroy() {
-        // Không cần hủy gì đặc biệt
     }
 }

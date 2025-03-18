@@ -5,6 +5,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 
 public class AuthFilter implements Filter {
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -17,13 +18,14 @@ public class AuthFilter implements Filter {
         String contextPath = httpRequest.getContextPath();
 
         // Danh sách các trang công khai (không cần đăng nhập)
-        boolean isPublicPage = requestURI.endsWith("index.html") ||
-                               requestURI.endsWith("signin.jsp") ||
-                               requestURI.endsWith("register.jsp") ||
-                               requestURI.startsWith(contextPath + "/assets/") ||
-                               requestURI.endsWith("register") ||
-                               requestURI.endsWith("login") ||
-                               requestURI.endsWith("logout");
+        boolean isPublicPage = requestURI.endsWith("index.html")
+                || requestURI.endsWith("signin.jsp")
+                || requestURI.endsWith("register.jsp")
+                || requestURI.endsWith("signup.jsp")
+                || requestURI.startsWith(contextPath + "/assets/")
+                || requestURI.endsWith("register")
+                || requestURI.endsWith("login")
+                || requestURI.endsWith("logout");
         // Cho phép truy cập tài nguyên tĩnh (CSS, JS, images)
 
         // Nếu là trang công khai, cho phép truy cập mà không cần kiểm tra đăng nhập
@@ -34,8 +36,7 @@ public class AuthFilter implements Filter {
 
         // Nếu không phải trang công khai, kiểm tra đăng nhập
         if (session == null || session.getAttribute("userId") == null) {
-            // Chưa đăng nhập, chuyển hướng về signin.jsp
-            httpResponse.sendRedirect(contextPath + "/view/signin.jsp");
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/view/signin.jsp");
             return;
         }
 

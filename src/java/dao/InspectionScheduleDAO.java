@@ -117,6 +117,34 @@ public class InspectionScheduleDAO {
         return null;
     }
 
+    public InspectionSchedule getScheduleByVehicleId(int vehicleId) throws SQLException {
+        String sql = "SELECT TOP 1 s.*, v.PlateNumber, st.Name AS StationName "
+                + "FROM InspectionSchedules s "
+                + "JOIN Vehicles v ON s.VehicleID = v.VehicleID "
+                + "JOIN InspectionStations st ON s.StationID = st.StationID "
+                + "WHERE s.VehicleID = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, vehicleId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    InspectionSchedule schedule = new InspectionSchedule();
+                    schedule.setScheduleID(rs.getInt("ScheduleID"));
+                    schedule.setVehicleID(rs.getInt("VehicleID"));
+                    schedule.setStationID(rs.getInt("StationID"));
+                    schedule.setOwnerID(rs.getInt("OwnerID"));
+                    schedule.setScheduleDate(rs.getTimestamp("ScheduleDate"));
+                    schedule.setStatus(rs.getString("Status"));
+                    schedule.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    schedule.setRequestID(rs.getInt("RequestID"));
+                    schedule.setPlateNumber(rs.getString("PlateNumber"));
+                    schedule.setStationName(rs.getString("StationName"));
+                    return schedule;
+                }
+            }
+        }
+        return null;
+    }
+
     public void updateStatus(int scheduleId, String status) throws SQLException {
         String sql = "UPDATE InspectionSchedules SET Status = ? WHERE ScheduleID = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -125,13 +153,56 @@ public class InspectionScheduleDAO {
             pstmt.executeUpdate();
         }
     }
-    
+
     public void updateStatusByRequestId(int requestId, String status) throws SQLException {
         String sql = "UPDATE InspectionSchedules SET Status = ? WHERE RequestID = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, status);
             pstmt.setInt(2, requestId);
             pstmt.executeUpdate();
+        }
+    }
+
+    public ArrayList<InspectionSchedule> getConfirmedSchedulesByStationId(int stationId) throws SQLException {
+        ArrayList<InspectionSchedule> schedules = new ArrayList<>();
+        String sql = "SELECT s.*, v.PlateNumber, st.Name AS StationName "
+                + "FROM InspectionSchedules s "
+                + "JOIN Vehicles v ON s.VehicleID = v.VehicleID "
+                + "JOIN InspectionStations st ON s.StationID = st.StationID "
+                + "WHERE s.StationID = ? AND s.Status = 'Pending' "
+                + "ORDER BY s.ScheduleDate DESC";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, stationId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    InspectionSchedule schedule = new InspectionSchedule();
+                    schedule.setScheduleID(rs.getInt("ScheduleID"));
+                    schedule.setVehicleID(rs.getInt("VehicleID"));
+                    schedule.setStationID(rs.getInt("StationID"));
+                    schedule.setOwnerID(rs.getInt("OwnerID"));
+                    schedule.setScheduleDate(rs.getTimestamp("ScheduleDate"));
+                    schedule.setStatus(rs.getString("Status"));
+                    schedule.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    schedule.setRequestID(rs.getInt("RequestID"));
+                    schedule.setPlateNumber(rs.getString("PlateNumber"));
+                    schedule.setStationName(rs.getString("StationName"));
+                    schedules.add(schedule);
+                }
+            }
+        }
+        return schedules;
+    }
+
+    public boolean updateScheduleStatusToCompleted(int scheduleID) {
+        String sql = "UPDATE InspectionSchedules SET Status = 'Completed' WHERE ScheduleID = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, scheduleID);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0; // Trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

@@ -1,6 +1,7 @@
 package controller.station;
 
 import dao.InspectionScheduleDAO;
+import dao.NotificationDAO;
 import dao.RequestDAO;
 import dao.UserDAO;
 import dao.VehicleDAO;
@@ -25,19 +26,15 @@ public class InspectionScheduleServlet extends HttpServlet {
     private final InspectionScheduleDAO inspectionScheduleDAO = new InspectionScheduleDAO();
     private final UserDAO userDAO = new UserDAO();
     private final VehicleDAO vehicleDAO = new VehicleDAO();
+    private final NotificationDAO notificationDAO = new NotificationDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         Integer userId = (Integer) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
-
-        // Kiểm tra quyền truy cập
-        if (userId == null || role == null || !role.equals("Station")) {
-            session.setAttribute("errorMessage", "Vui lòng đăng nhập với vai trò Station.");
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+        Integer inspectionStationId = (Integer) session.getAttribute("inspectionStationId");
+        
 
         // Lấy các tham số từ request
         String statusFilter = request.getParameter("statusFilter");
@@ -57,8 +54,8 @@ public class InspectionScheduleServlet extends HttpServlet {
 
         try {
             // Lấy danh sách yêu cầu InspectionSchedule
-            List<Request> requests = requestDAO.getInspectionScheduleRequests(statusFilter, searchKeyword, fromDate, toDate, sortBy, sortOrder, page, pageSize);
-            int totalRequests = requestDAO.countInspectionScheduleRequests(statusFilter, searchKeyword, fromDate, toDate);
+            List<Request> requests = requestDAO.getInspectionScheduleRequests(inspectionStationId, statusFilter, searchKeyword, fromDate, toDate, sortBy, sortOrder, page, pageSize);
+            int totalRequests = requestDAO.countInspectionScheduleRequests(inspectionStationId, statusFilter, searchKeyword, fromDate, toDate);
             int totalPages = (int) Math.ceil((double) totalRequests / pageSize);
 
             // Lấy thông tin chi tiết nếu có requestId
@@ -104,13 +101,6 @@ public class InspectionScheduleServlet extends HttpServlet {
         Integer userId = (Integer) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
-        // Kiểm tra quyền truy cập
-        if (userId == null || role == null || !role.equals("Station")) {
-            session.setAttribute("errorMessage", "Vui lòng đăng nhập với vai trò Station.");
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
-
         String requestIdStr = request.getParameter("requestId");
         String action = request.getParameter("action");
 
@@ -134,10 +124,18 @@ public class InspectionScheduleServlet extends HttpServlet {
                 requestDAO.updateRequestStatus(requestId, "Completed");
                 inspectionScheduleDAO.updateStatusByRequestId(requestId, "Confirmed");
                 session.setAttribute("successMessage", "Yêu cầu đã được chấp thuận.");
+                
+                Vehicle ownerVehicle = vehicleDAO.getVehicleById(requestObj.getVehicleID());
+                String ownerMessage = "Phương tiện của bạn (" + ownerVehicle.getPlateNumber() + ") đã được chấp nhận kiểm tra";
+                notificationDAO.addNotification(requestObj.getCreatedBy() , ownerMessage, "Result");
             } else if ("reject".equals(action)) {
                 requestDAO.updateRequestStatus(requestId, "Rejected");
                 inspectionScheduleDAO.updateStatusByRequestId(requestId, "Cancelled");
                 session.setAttribute("successMessage", "Yêu cầu đã bị từ chối.");
+                
+                Vehicle ownerVehicle = vehicleDAO.getVehicleById(requestObj.getVehicleID());
+                String ownerMessage = "Phương tiện của bạn (" + ownerVehicle.getPlateNumber() + ") đã bị từ chối kiểm tra";
+                notificationDAO.addNotification(requestObj.getCreatedBy() , ownerMessage, "Result");
             }
 
             response.sendRedirect(request.getContextPath() + "/station/inspectionSchedule");

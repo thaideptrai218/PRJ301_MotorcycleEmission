@@ -218,9 +218,9 @@ public class RequestDAO {
         return 0;
     }
 
-    public List<Request> getInspectionScheduleRequests(String status, String searchKeyword, String fromDate, String toDate, String sortBy, String sortOrder, int page, int pageSize) throws SQLException {
+    public List<Request> getInspectionScheduleRequests(int stationID, String status, String searchKeyword, String fromDate, String toDate, String sortBy, String sortOrder, int page, int pageSize) throws SQLException {
         List<Request> requests = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM Requests WHERE Type = 'InspectionSchedule'");
+        StringBuilder sql = new StringBuilder("SELECT * FROM Requests WHERE Type = 'InspectionSchedule' AND AssignedTo =" + stationID );
         List<Object> params = new ArrayList<>();
 
         // Bộ lọc trạng thái
@@ -288,8 +288,8 @@ public class RequestDAO {
     }
 
     // Đếm tổng số yêu cầu InspectionSchedule để hỗ trợ phân trang
-    public int countInspectionScheduleRequests(String status, String searchKeyword, String fromDate, String toDate) throws SQLException {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Requests WHERE Type = 'InspectionSchedule'");
+    public int countInspectionScheduleRequests(int stationID, String status, String searchKeyword, String fromDate, String toDate) throws SQLException {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Requests WHERE Type = 'InspectionSchedule' AND AssignedTo = " + stationID);
         List<Object> params = new ArrayList<>();
 
         if (status != null && !status.trim().isEmpty()) {

@@ -29,12 +29,6 @@ public class AddVehicleServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Integer ownerId = (Integer) session.getAttribute("userId");
 
-        if (ownerId == null) {
-            session.setAttribute("errorMessage", "Vui lòng đăng nhập.");
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
-
         String plateNumber = request.getParameter("plateNumber");
         String brand = request.getParameter("brand");
         String model = request.getParameter("model");
@@ -72,7 +66,6 @@ public class AddVehicleServlet extends HttpServlet {
             VerificationRecord verificationRecord = new VerificationRecord();
             verificationRecord.setVehicleID(vehicleId);
             verificationRecord.setStatus("Pending");
-            verificationRecordDAO.addVerification(vehicleId); // Tạo bản ghi với RequestID NULL ban đầu
 
             // Tạo Request
             Request ownerRequest = new Request();
@@ -91,7 +84,7 @@ public class AddVehicleServlet extends HttpServlet {
 
             // Gửi thông báo
             String ownerMessage = "Phương tiện của bạn (" + plateNumber + ") đã được thêm và đang chờ xác minh.";
-            notificationDAO.addNotification(ownerId, ownerMessage, "Request");
+            notificationDAO.addNotification(ownerId, ownerMessage, "Verify");
 
             // Ghi log
             logDAO.addLog(ownerId, "Thêm Phương Tiện");

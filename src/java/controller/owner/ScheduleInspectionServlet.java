@@ -4,6 +4,7 @@ import dao.InspectionScheduleDAO;
 import dao.NotificationDAO;
 import dao.LogDAO;
 import dao.RequestDAO;
+import dao.VehicleDAO;
 import model.InspectionSchedule;
 import model.Request;
 import java.io.IOException;
@@ -16,12 +17,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.Vehicle;
 
 public class ScheduleInspectionServlet extends HttpServlet {
     private final InspectionScheduleDAO inspectionScheduleDAO = new InspectionScheduleDAO();
     private final NotificationDAO notificationDAO = new NotificationDAO();
     private final LogDAO logDAO = new LogDAO();
     private final RequestDAO requestDAO = new RequestDAO();
+    private final VehicleDAO vehicleDAO = new VehicleDAO();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -79,8 +82,9 @@ public class ScheduleInspectionServlet extends HttpServlet {
                 throw new SQLException("Không thể gửi lịch hẹn.");
             }
 
+            Vehicle ownerVehicle = vehicleDAO.getVehicleById(vehicleId);
             // Gửi thông báo
-            String ownerMessage = "Lịch hẹn kiểm định cho phương tiện ID " + vehicleId + " đã được gửi.";
+            String ownerMessage = "Lịch hẹn kiểm định cho phương tiện  " + ownerVehicle.getPlateNumber() + " đã được gửi.";
             notificationDAO.addNotification(ownerId, ownerMessage, "Schedule");
 
             // Ghi log
