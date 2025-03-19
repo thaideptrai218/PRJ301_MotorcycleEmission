@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-//@WebServlet(name = "InspectionScheduleServlet", urlPatterns = {"/station/inspectionSchedule"})
+@WebServlet(name = "InspectionScheduleServlet", urlPatterns = {"/station/inspectionSchedule"})
 public class InspectionScheduleServlet extends HttpServlet {
 
     private final RequestDAO requestDAO = new RequestDAO();

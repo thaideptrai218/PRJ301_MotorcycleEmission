@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZoneId;
@@ -21,13 +22,14 @@ import model.InspectionRecord;
 import model.InspectionSchedule;
 import model.Vehicle;
 
-@WebServlet(name = "InspectionScheduleServlet", urlPatterns = {"/inspector/inspectionSchedule"})
-public class InspectionScheduleServlet extends HttpServlet {
+@WebServlet(name = "InspectorScheduleServlet", urlPatterns = {"/inspector/inspectionSchedule"})
+public class InspectorScheduleServlet extends HttpServlet {
 
     private final InspectionScheduleDAO inspectionScheduleDAO = new InspectionScheduleDAO();
     private final VehicleDAO vehicleDAO = new VehicleDAO();
     private final InspectionRecordDAO inspectionRecordDAO = new InspectionRecordDAO();
     private final InspectionStationDAO inspectionStationDAO = new InspectionStationDAO();
+    private final InspectionScheduleDAO scheduleDao = new InspectionScheduleDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -58,7 +60,7 @@ public class InspectionScheduleServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Invalid Vehicle ID!");
             request.getRequestDispatcher("/view/secure/inspector/vehicleInspection.jsp").forward(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(InspectionScheduleServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InspectorScheduleServlet.class.getName()).log(Level.SEVERE, null, ex);
             response.sendRedirect(request.getContextPath() + "/inspector/scheduleFormPage");
         }
     }
@@ -181,7 +183,7 @@ public class InspectionScheduleServlet extends HttpServlet {
                     return;
                 }
             } catch (SQLException e) {
-                Logger.getLogger(InspectionScheduleServlet.class.getName()).log(Level.SEVERE, "Database error", e);
+                Logger.getLogger(InspectorScheduleServlet.class.getName()).log(Level.SEVERE, "Database error", e);
                 request.setAttribute("errorMessage", "Database error: " + e.getMessage());
                 request.getRequestDispatcher("/view/secure/inspector/vehicleInspection.jsp").forward(request, response);
                 return;
@@ -197,10 +199,15 @@ public class InspectionScheduleServlet extends HttpServlet {
 
             // Thành công
             request.getSession().setAttribute("successMessage", "Inspection record added successfully!");
-            response.sendRedirect(request.getContextPath() + "/inspector/schedules.jsp");
+             HttpSession session = request.getSession(false);
+            Integer inspectionStationId = (Integer) session.getAttribute("inspectionStationId");
+            List<InspectionSchedule> schedules = scheduleDao.getConfirmedSchedulesByStationId(inspectionStationId);
+            request.setAttribute("schedules", schedules);
+
+            request.getRequestDispatcher("/view/secure/inspector/schedules.jsp").forward(request, response);
 
         } catch (Exception e) {
-            Logger.getLogger(InspectionScheduleServlet.class.getName()).log(Level.SEVERE, "Unexpected error", e);
+            Logger.getLogger(InspectorScheduleServlet.class.getName()).log(Level.SEVERE, "Unexpected error", e);
             request.setAttribute("errorMessage", "Error: " + e.getMessage());
             request.getRequestDispatcher("/view/secure/inspector/vehicleInspection.jsp").forward(request, response);
         }
