@@ -10,7 +10,6 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dashboard.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
     </head>
     <body>
         <div class="wrapper">
@@ -63,11 +62,51 @@
                             <table class="table table-striped table-hover">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>Owner ID</th>
-                                        <th>Biển số xe</th>
-                                        <th>Ngày tạo</th>
-                                        <th>Ngày kiểm định</th>
-                                        <th>Trạng thái</th>
+                                        <th>
+                                            <a href="?sortBy=ownerID&sortOrder=${sortBy == 'ownerID' && sortOrder == 'asc' ? 'desc' : 'asc'}&searchKeyword=${searchKeyword}&fromDate=${fromDate}&toDate=${toDate}&statusFilter=${statusFilter}">
+                                                Owner ID
+                                                <c:if test="${sortBy == 'ownerID'}">
+                                                    <c:if test="${sortOrder == 'asc'}"><i class="fas fa-arrow-up"></i></c:if>
+                                                    <c:if test="${sortOrder == 'desc'}"><i class="fas fa-arrow-down"></i></c:if>
+                                                </c:if>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="?sortBy=plateNumber&sortOrder=${sortBy == 'plateNumber' && sortOrder == 'asc' ? 'desc' : 'asc'}&searchKeyword=${searchKeyword}&fromDate=${fromDate}&toDate=${toDate}&statusFilter=${statusFilter}">
+                                                Biển số xe
+                                                <c:if test="${sortBy == 'plateNumber'}">
+                                                    <c:if test="${sortOrder == 'asc'}"><i class="fas fa-arrow-up"></i></c:if>
+                                                    <c:if test="${sortOrder == 'desc'}"><i class="fas fa-arrow-down"></i></c:if>
+                                                </c:if>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="?sortBy=createdAt&sortOrder=${sortBy == 'createdAt' && sortOrder == 'asc' ? 'desc' : 'asc'}&searchKeyword=${searchKeyword}&fromDate=${fromDate}&toDate=${toDate}&statusFilter=${statusFilter}">
+                                                Ngày tạo
+                                                <c:if test="${sortBy == 'createdAt'}">
+                                                    <c:if test="${sortOrder == 'asc'}"><i class="fas fa-arrow-up"></i></c:if>
+                                                    <c:if test="${sortOrder == 'desc'}"><i class="fas fa-arrow-down"></i></c:if>
+                                                </c:if>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="?sortBy=scheduleDate&sortOrder=${sortBy == 'scheduleDate' && sortOrder == 'asc' ? 'desc' : 'asc'}&searchKeyword=${searchKeyword}&fromDate=${fromDate}&toDate=${toDate}&statusFilter=${statusFilter}">
+                                                Ngày kiểm định
+                                                <c:if test="${sortBy == 'scheduleDate'}">
+                                                    <c:if test="${sortOrder == 'asc'}"><i class="fas fa-arrow-up"></i></c:if>
+                                                    <c:if test="${sortOrder == 'desc'}"><i class="fas fa-arrow-down"></i></c:if>
+                                                </c:if>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="?sortBy=status&sortOrder=${sortBy == 'status' && sortOrder == 'asc' ? 'desc' : 'asc'}&searchKeyword=${searchKeyword}&fromDate=${fromDate}&toDate=${toDate}&statusFilter=${statusFilter}">
+                                                Trạng thái
+                                                <c:if test="${sortBy == 'status'}">
+                                                    <c:if test="${sortOrder == 'asc'}"><i class="fas fa-arrow-up"></i></c:if>
+                                                    <c:if test="${sortOrder == 'desc'}"><i class="fas fa-arrow-down"></i></c:if>
+                                                </c:if>
+                                            </a>
+                                        </th>
                                         <th>Hành động</th>
                                     </tr>
                                 </thead>
@@ -96,6 +135,5 @@
         </div>
 
         <script src="${pageContext.request.contextPath}/assets/js/hambergurButton.js"></script>
-
     </body>
 </html>

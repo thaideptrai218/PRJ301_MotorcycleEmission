@@ -33,17 +33,27 @@ public class ScheduleFormPageServlet extends HttpServlet {
         String fromDate = request.getParameter("fromDate");
         String toDate = request.getParameter("toDate");
         String status = request.getParameter("statusFilter");
+        String sortBy = request.getParameter("sortBy");
+        String sortOrder = request.getParameter("sortOrder");
+
+        // Nếu không có sortBy, mặc định sắp xếp theo scheduleDate giảm dần
+        if (sortBy == null || sortBy.isEmpty()) {
+            sortBy = "scheduleDate";
+            sortOrder = "desc";
+        }
 
         try {
-            // Lấy danh sách lịch trình với bộ lọc
+            // Lấy danh sách lịch trình với bộ lọc và sắp xếp
             List<InspectionSchedule> schedules = scheduleDao.getSchedulesByStationIdWithFilters(
-                inspectionStationId, searchKeyword, fromDate, toDate, status
+                inspectionStationId, searchKeyword, fromDate, toDate, status, sortBy, sortOrder
             );
             request.setAttribute("schedules", schedules);
             request.setAttribute("searchKeyword", searchKeyword);
             request.setAttribute("fromDate", fromDate);
             request.setAttribute("toDate", toDate);
             request.setAttribute("statusFilter", status);
+            request.setAttribute("sortBy", sortBy);
+            request.setAttribute("sortOrder", sortOrder);
 
             request.getRequestDispatcher("/view/secure/inspector/schedules.jsp").forward(request, response);
         } catch (SQLException e) {

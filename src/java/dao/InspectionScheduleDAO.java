@@ -205,76 +205,76 @@ public class InspectionScheduleDAO {
             return false;
         }
     }
-    
+
     public ArrayList<InspectionSchedule> getConfirmedSchedulesByStationIdWithFilters(
-        int stationId, String searchKeyword, String fromDate, String toDate) throws SQLException {
-    ArrayList<InspectionSchedule> schedules = new ArrayList<>();
-    StringBuilder sql = new StringBuilder(
-        "SELECT s.*, v.PlateNumber, st.Name AS StationName " +
-        "FROM InspectionSchedules s " +
-        "JOIN Vehicles v ON s.VehicleID = v.VehicleID " +
-        "JOIN InspectionStations st ON s.StationID = st.StationID " +
-        "WHERE s.StationID = ? AND s.Status = 'Confirmed'"
-    );
-
-    // Thêm điều kiện lọc theo từ khóa nếu có
-    if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
-        sql.append(" AND v.PlateNumber LIKE ?");
-    }
-
-    // Thêm điều kiện lọc theo khoảng thời gian nếu có
-    if (fromDate != null && !fromDate.trim().isEmpty()) {
-        sql.append(" AND s.ScheduleDate >= ?");
-    }
-    if (toDate != null && !toDate.trim().isEmpty()) {
-        sql.append(" AND s.ScheduleDate <= ?");
-    }
-
-    sql.append(" ORDER BY s.ScheduleDate DESC");
-
-    try (PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
-        int paramIndex = 1;
-        pstmt.setInt(paramIndex++, stationId);
-
-        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
-            pstmt.setString(paramIndex++, "%" + searchKeyword + "%");
-        }
-        if (fromDate != null && !fromDate.trim().isEmpty()) {
-            pstmt.setString(paramIndex++, fromDate + " 00:00:00");
-        }
-        if (toDate != null && !toDate.trim().isEmpty()) {
-            pstmt.setString(paramIndex++, toDate + " 23:59:59");
-        }
-
-        try (ResultSet rs = pstmt.executeQuery()) {
-            while (rs.next()) {
-                InspectionSchedule schedule = new InspectionSchedule();
-                schedule.setScheduleID(rs.getInt("ScheduleID"));
-                schedule.setVehicleID(rs.getInt("VehicleID"));
-                schedule.setStationID(rs.getInt("StationID"));
-                schedule.setOwnerID(rs.getInt("OwnerID"));
-                schedule.setScheduleDate(rs.getTimestamp("ScheduleDate"));
-                schedule.setStatus(rs.getString("Status"));
-                schedule.setCreatedAt(rs.getTimestamp("CreatedAt"));
-                schedule.setRequestID(rs.getInt("RequestID"));
-                schedule.setPlateNumber(rs.getString("PlateNumber"));
-                schedule.setStationName(rs.getString("StationName"));
-                schedules.add(schedule);
-            }
-        }
-    }
-    return schedules;
-}   
-    
-    public ArrayList<InspectionSchedule> getSchedulesByStationIdWithFilters(
-            int stationId, String searchKeyword, String fromDate, String toDate, String status) throws SQLException {
+            int stationId, String searchKeyword, String fromDate, String toDate) throws SQLException {
         ArrayList<InspectionSchedule> schedules = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
-            "SELECT s.*, v.PlateNumber, st.Name AS StationName " +
-            "FROM InspectionSchedules s " +
-            "JOIN Vehicles v ON s.VehicleID = v.VehicleID " +
-            "JOIN InspectionStations st ON s.StationID = st.StationID " +
-            "WHERE s.StationID = ?"
+                "SELECT s.*, v.PlateNumber, st.Name AS StationName "
+                + "FROM InspectionSchedules s "
+                + "JOIN Vehicles v ON s.VehicleID = v.VehicleID "
+                + "JOIN InspectionStations st ON s.StationID = st.StationID "
+                + "WHERE s.StationID = ? AND s.Status = 'Confirmed'"
+        );
+
+        // Thêm điều kiện lọc theo từ khóa nếu có
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            sql.append(" AND v.PlateNumber LIKE ?");
+        }
+
+        // Thêm điều kiện lọc theo khoảng thời gian nếu có
+        if (fromDate != null && !fromDate.trim().isEmpty()) {
+            sql.append(" AND s.ScheduleDate >= ?");
+        }
+        if (toDate != null && !toDate.trim().isEmpty()) {
+            sql.append(" AND s.ScheduleDate <= ?");
+        }
+
+        sql.append(" ORDER BY s.ScheduleDate DESC");
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
+            int paramIndex = 1;
+            pstmt.setInt(paramIndex++, stationId);
+
+            if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+                pstmt.setString(paramIndex++, "%" + searchKeyword + "%");
+            }
+            if (fromDate != null && !fromDate.trim().isEmpty()) {
+                pstmt.setString(paramIndex++, fromDate + " 00:00:00");
+            }
+            if (toDate != null && !toDate.trim().isEmpty()) {
+                pstmt.setString(paramIndex++, toDate + " 23:59:59");
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    InspectionSchedule schedule = new InspectionSchedule();
+                    schedule.setScheduleID(rs.getInt("ScheduleID"));
+                    schedule.setVehicleID(rs.getInt("VehicleID"));
+                    schedule.setStationID(rs.getInt("StationID"));
+                    schedule.setOwnerID(rs.getInt("OwnerID"));
+                    schedule.setScheduleDate(rs.getTimestamp("ScheduleDate"));
+                    schedule.setStatus(rs.getString("Status"));
+                    schedule.setCreatedAt(rs.getTimestamp("CreatedAt"));
+                    schedule.setRequestID(rs.getInt("RequestID"));
+                    schedule.setPlateNumber(rs.getString("PlateNumber"));
+                    schedule.setStationName(rs.getString("StationName"));
+                    schedules.add(schedule);
+                }
+            }
+        }
+        return schedules;
+    }
+
+    public ArrayList<InspectionSchedule> getSchedulesByStationIdWithFilters(
+            int stationId, String searchKeyword, String fromDate, String toDate, String status, String sortBy, String sortOrder) throws SQLException {
+        ArrayList<InspectionSchedule> schedules = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT s.*, v.PlateNumber, st.Name AS StationName "
+                + "FROM InspectionSchedules s "
+                + "JOIN Vehicles v ON s.VehicleID = v.VehicleID "
+                + "JOIN InspectionStations st ON s.StationID = st.StationID "
+                + "WHERE s.StationID = ?"
         );
 
         // Thêm điều kiện lọc theo từ khóa
@@ -295,8 +295,32 @@ public class InspectionScheduleDAO {
             sql.append(" AND s.Status = ?");
         }
 
-        // Sắp xếp theo ScheduleDate DESC, sau đó CreatedAt DESC
-        sql.append(" ORDER BY s.ScheduleDate DESC, s.CreatedAt DESC");
+        // Thêm mệnh đề ORDER BY dựa trên sortBy và sortOrder
+        if (sortBy != null && !sortBy.isEmpty()) {
+            String order = (sortOrder != null && sortOrder.equalsIgnoreCase("desc")) ? "DESC" : "ASC";
+            switch (sortBy) {
+                case "ownerID":
+                    sql.append(" ORDER BY s.OwnerID " + order);
+                    break;
+                case "plateNumber":
+                    sql.append(" ORDER BY v.PlateNumber " + order);
+                    break;
+                case "createdAt":
+                    sql.append(" ORDER BY s.CreatedAt " + order);
+                    break;
+                case "scheduleDate":
+                    sql.append(" ORDER BY s.ScheduleDate " + order);
+                    break;
+                case "status":
+                    sql.append(" ORDER BY s.Status " + order);
+                    break;
+                default:
+                    sql.append(" ORDER BY s.ScheduleDate DESC, s.CreatedAt DESC");
+                    break;
+            }
+        } else {
+            sql.append(" ORDER BY s.ScheduleDate DESC, s.CreatedAt DESC");
+        }
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
             int paramIndex = 1;
