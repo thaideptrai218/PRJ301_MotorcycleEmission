@@ -18,15 +18,12 @@
             <a class="nav-link" href="${pageContext.request.contextPath}/station/home">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/station/requests">Add Vehicle</a>
-        </li><!--
--->        <li class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/station/chooseWorkplace">Choose Workplace</a>
         </li><!--
--->        <li class="nav-item">
+        -->        <li class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/station/verifyVehicle">Verify Vehicle</a>
         </li><!--
--->        <li class="nav-item">
+        -->        <li class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/station/inspectionSchedule">Inspection Requests</a>
         </li><!--
         <li class="nav-item">

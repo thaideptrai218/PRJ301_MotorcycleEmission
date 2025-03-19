@@ -169,7 +169,7 @@ public class InspectionScheduleDAO {
                 + "FROM InspectionSchedules s "
                 + "JOIN Vehicles v ON s.VehicleID = v.VehicleID "
                 + "JOIN InspectionStations st ON s.StationID = st.StationID "
-                + "WHERE s.StationID = ? AND s.Status = 'Pending' "
+                + "WHERE s.StationID = ? AND s.Status = 'Confirmed' "
                 + "ORDER BY s.ScheduleDate DESC";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, stationId);

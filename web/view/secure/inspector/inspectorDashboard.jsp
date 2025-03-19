@@ -12,7 +12,7 @@
     <meta http-equiv="Expires" content="0">
 </head>
 <body>
-    <%@ include file="/view/header.jsp" %>
+    <%@ include file="/view/inspector/header.jsp" %>
 
     <div class="container mt-4">
         <h2>Inspector Dashboard</h2>

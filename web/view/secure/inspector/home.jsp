@@ -6,7 +6,7 @@ prefix="c" %>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Home - Owner Dashboard</title>
+        <title>Home - Inspector Dashboard</title>
         <link
             rel="stylesheet"
             href="${pageContext.request.contextPath}/assets/css/dashboard.css"
@@ -26,8 +26,8 @@ prefix="c" %>
     </head>
     <body>
         <div class="wrapper">
-            <%@ include file="/view/secure/station/header.jsp" %> <%@ include
-            file="/view/secure/station/sidebar.jsp" %>
+            <%@ include file="/view/secure/inspector/header.jsp" %> 
+            <%@ include file="/view/secure/inspector/sidebar.jsp" %>
 
             <!-- Main Content -->
             <div class="content">

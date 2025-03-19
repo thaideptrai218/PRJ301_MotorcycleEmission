@@ -14,13 +14,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.InspectionRecord;
 import model.InspectionSchedule;
 import model.Vehicle;
 
-@WebServlet(name = "InspectionScheduleServlet", urlPatterns = {"/inspectionSchedule"})
+@WebServlet(name = "InspectionScheduleServlet", urlPatterns = {"/inspector/inspectionSchedule"})
 public class InspectionScheduleServlet extends HttpServlet {
 
     private final InspectionScheduleDAO inspectionScheduleDAO = new InspectionScheduleDAO();
@@ -35,13 +36,14 @@ public class InspectionScheduleServlet extends HttpServlet {
             String stationIDParam = request.getParameter("stationID");
             if (vehicleIDParam == null || vehicleIDParam.isEmpty()) {
                 request.setAttribute("errorMessage", "Vehicle ID is missing!");
-                request.getRequestDispatcher("/view/secure/inspector/vehicleInspection.jsp").forward(request, response);
+                request.getRequestDispatcher("/view/secure/inspector/schedules.jsp").forward(request, response);
                 return;
             }
 
             int vehicleID = Integer.parseInt(vehicleIDParam);
+            int stationID = Integer.parseInt(stationIDParam);
             Vehicle vehicle = vehicleDAO.getVehicleById(vehicleID);
-            InspectionSchedule schedule = inspectionScheduleDAO.getScheduleByVehicleId(vehicleID);
+            List<InspectionSchedule> schedule = inspectionScheduleDAO.getConfirmedSchedulesByStationId(stationID);
 
             if (vehicle == null || schedule == null) {
                 request.setAttribute("errorMessage", "Vehicle or schedule not found!");

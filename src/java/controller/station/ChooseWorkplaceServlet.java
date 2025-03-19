@@ -22,13 +22,6 @@ public class ChooseWorkplaceServlet extends HttpServlet {
         Integer userId = (Integer) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
-        // Kiểm tra đăng nhập và vai trò
-        if (userId == null || role == null || (!role.equals("Station") && !role.equals("Inspector"))) {
-            session.setAttribute("errorMessage", "Vui lòng đăng nhập với vai trò Station hoặc Inspector.");
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
-
         try {
             // Lấy danh sách tất cả InspectionStation
             List<InspectionStation> availableStations = inspectionStationDAO.getAllStations();

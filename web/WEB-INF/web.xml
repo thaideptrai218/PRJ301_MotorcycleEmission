@@ -177,6 +177,11 @@
         <servlet-name>InspectionRequestPageServlet</servlet-name>
         <url-pattern>/owner/inspectionRequests</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>InspectionScheduleServlet</servlet-name>
+        <servlet-class>controller.station.InspectionScheduleServlet</servlet-class>
+    </servlet>
+    
     <welcome-file-list>
         <welcome-file>login</welcome-file>
     </welcome-file-list>

@@ -40,17 +40,15 @@
                             </thead>
                             <tbody>
                                 <c:forEach var="schedule" items="${schedules}">
-                                    <c:if test="${schedule.status eq 'Pending'}">
-                                        <tr>
-                                            <td>${schedule.scheduleID}</td>
-                                            <td>${schedule.vehicleID}</td>
-                                            <td>${schedule.stationID}</td>
-                                            <td>${schedule.ownerID}</td>
-                                            <td>${schedule.createDate}</td>
-                                            <td>${schedule.scheduleDate}</td>
-                                            <td><a href="${pageContext.request.contextPath}/inspectionSchedule?vehicleID=${schedule.vehicleID}&stationID=${schedule.stationID}">Select</a></td>
-                                        </tr>
-                                    </c:if>
+                                    <tr>
+                                        <td>${schedule.scheduleID}</td>
+                                        <td>${schedule.vehicleID}</td>
+                                        <td>${schedule.stationID}</td>
+                                        <td>${schedule.ownerID}</td>
+                                        <td>${schedule.createdAt}</td>
+                                        <td>${schedule.scheduleDate}</td>
+                                        <td><a href="${pageContext.request.contextPath}/inspector/inspectionSchedule?vehicleID=${schedule.vehicleID}&stationID=${schedule.stationID}">Select</a></td>
+                                    </tr>
                                 </c:forEach>
                             </tbody>
 
