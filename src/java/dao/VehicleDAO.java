@@ -108,4 +108,25 @@ public class VehicleDAO {
         }
         return null;
     }
+    
+    public Vehicle getVehicleByPlateNumber(String plateNumber) throws SQLException {
+        String sql = "SELECT * FROM Vehicles WHERE PlateNumber = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, plateNumber);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Vehicle vehicle = new Vehicle();
+                    vehicle.setVehicleID(rs.getInt("VehicleID"));
+                    vehicle.setOwnerID(rs.getInt("OwnerID"));
+                    vehicle.setPlateNumber(rs.getString("PlateNumber"));
+                    vehicle.setBrand(rs.getString("Brand"));
+                    vehicle.setModel(rs.getString("Model"));
+                    vehicle.setManufactureYear(rs.getInt("ManufactureYear"));
+                    vehicle.setEngineNumber(rs.getString("EngineNumber"));
+                    return vehicle;
+                }
+            }
+        }
+        return null;
+    }
 }

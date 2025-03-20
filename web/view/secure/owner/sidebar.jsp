@@ -35,6 +35,11 @@
         <li class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/owner/notificationsPage">Notifications</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/owner/violationLookup">
+                <i class="fas fa-exclamation-triangle"></i> Tra cứu vi phạm
+            </a>
+        </li>
     </ul>
     <div class="logout-section">
         <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger btn-block">Đăng xuất</a>
