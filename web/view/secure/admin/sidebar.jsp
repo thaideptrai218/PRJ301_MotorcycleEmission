@@ -19,6 +19,11 @@
                 <i class="fas fa-users"></i> Quản lý người dùng
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/statistics">
+                <i class="fas fa-chart-bar"></i> Thống kê và báo cáo
+            </a>
+        </li>
     </ul>
     <div class="logout-section">
         <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger btn-block">Đăng xuất</a>
