@@ -4,8 +4,6 @@ import dao.VehicleDAO;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
-import java.util.List;
-import model.Vehicle;
 public class OwnerDashboardServlet extends HttpServlet {
 
     private final VehicleDAO vehicleDAO = new VehicleDAO();
@@ -19,10 +17,6 @@ public class OwnerDashboardServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/view/signin.jsp");
             return;
         }
-
-        int userId = (int) session.getAttribute("userId");
-        List<Vehicle> vehicles = vehicleDAO.getVehiclesByOwnerId(userId);
-        session.setAttribute("vehicles", vehicles);
 
         response.sendRedirect("owner/home");
     }

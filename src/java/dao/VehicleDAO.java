@@ -88,6 +88,35 @@ public class VehicleDAO {
         return vehicles;
     }
     
+    public List<Vehicle> getApprovedVehiclesByOwnerId(int ownerId) throws SQLException {
+        List<Vehicle> vehicles = new ArrayList<>();
+        String sql = """
+                     SELECT v.*, vr.Status AS VerificationStatus
+                                     FROM Vehicles v
+                                     LEFT JOIN VerificationRecords vr ON v.VehicleID = vr.VehicleID
+                                     WHERE v.OwnerID = ? AND vr.Status = 'Approved'
+                                     ORDER BY v.VehicleID DESC
+                     """;
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, ownerId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Vehicle vehicle = new Vehicle();
+                    vehicle.setVehicleID(rs.getInt("VehicleID"));
+                    vehicle.setOwnerID(rs.getInt("OwnerID"));
+                    vehicle.setPlateNumber(rs.getString("PlateNumber"));
+                    vehicle.setBrand(rs.getString("Brand"));
+                    vehicle.setModel(rs.getString("Model"));
+                    vehicle.setManufactureYear(rs.getInt("ManufactureYear"));
+                    vehicle.setEngineNumber(rs.getString("EngineNumber"));
+                    vehicle.setVerificationStatus(rs.getString("VerificationStatus"));
+                    vehicles.add(vehicle);
+                }
+            }
+        }
+        return vehicles;
+    }
+    
     public Vehicle getVehicleById(int vehicleId) throws SQLException {
         String sql = "SELECT * FROM Vehicles WHERE VehicleID = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {

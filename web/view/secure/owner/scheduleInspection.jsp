@@ -37,10 +37,10 @@
                             <div class="form-group">
                                 <label for="vehicleId">Select Vehicle <span style="color:red;">*</span></label>
                                 <select class="form-control" id="vehicleId" name="vehicleId" required>
-                                    <c:if test="${empty sessionScope.vehicles}">
+                                    <c:if test="${empty vehicles}">
                                         <option value="">No vehicles available</option>
                                     </c:if>
-                                    <c:forEach var="vehicle" items="${sessionScope.vehicles}">
+                                    <c:forEach var="vehicle" items="${vehicles}">
                                         <option value="${vehicle.vehicleID}">${vehicle.plateNumber} (${vehicle.brand} ${vehicle.model})</option>
                                     </c:forEach>
                                 </select>
@@ -48,10 +48,10 @@
                             <div class="form-group">
                                 <label for="stationId">Inspection Station <span style="color:red;">*</span></label>
                                 <select class="form-control" id="stationId" name="stationId" required>
-                                    <c:if test="${empty applicationScope.inspectionStations}">
+                                    <c:if test="${empty inspectionStations}">
                                         <option value="">No stations available</option>
                                     </c:if>
-                                    <c:forEach var="station" items="${applicationScope.inspectionStations}">
+                                    <c:forEach var="station" items="${inspectionStations}">
                                         <option value="${station.stationID}">${station.name} - ${station.address}</option>
                                     </c:forEach>
                                 </select>

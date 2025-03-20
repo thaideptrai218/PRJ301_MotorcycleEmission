@@ -24,6 +24,12 @@
                 <i class="fas fa-chart-bar"></i> Thống kê và báo cáo
             </a>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/inspectionStationManagement">
+                <i class="fas fa-building"></i> Quản lý trạm kiểm định
+            </a>
+        </li>
     </ul>
     <div class="logout-section">
         <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger btn-block">Đăng xuất</a>

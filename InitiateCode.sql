@@ -1,7 +1,7 @@
-﻿CREATE DATABASE MotorcycleEmissionDB1;
+﻿CREATE DATABASE MotorcycleEmissionDB3;
 GO
 
-USE MotorcycleEmissionDB1;
+USE MotorcycleEmissionDB3;
 GO
 
 -- 1.1. Bảng Users (Người dùng)
@@ -12,8 +12,12 @@ CREATE TABLE Users (
     Password NVARCHAR(255) NOT NULL,
     Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Owner', 'Inspector', 'Station', 'Police', 'Admin')),
     Phone NVARCHAR(15) NOT NULL,
+	isLocked BIT DEFAULT 0
 );
 GO
+
+Insert INTO Users (FullName, Email, Password, Role, Phone) VALUES ('AdminVIP', 'admin@gmail.com', 'admin', 'Admin', 6969696969)
+SELECT * FROM Users
 
 -- 1.2. Bảng Vehicles (Phương tiện)
 CREATE TABLE Vehicles (
@@ -87,6 +91,9 @@ CREATE TABLE InspectionRecords (
     FOREIGN KEY (InspectorID) REFERENCES Users(UserID)
 );
 GO
+
+SELECT * FROM InspectionRecords	
+
 	
 -- 1.6. Bảng Violations (Vi phạm)
 CREATE TABLE Violations (
@@ -147,17 +154,3 @@ INSERT INTO InspectionStations (Name, Address, Phone, Email) VALUES
 ('Station Hanoi 5', '901 Side Road, Hanoi', '0123456789', 'station4@example.com');
 GO
 SELECT * FROM InspectionStations
-
--- Thêm dữ liệu vào bảng VerificationRecords
-INSERT INTO VerificationRecords (VehicleID, Status, Comments) VALUES
-(7, 'Approved', 'Đã xác minh');
-
-GO
-SELECT * FROM VerificationRecords
-
--- Thêm dữ liệu vào bảng InspectionSchedules
-INSERT INTO InspectionSchedules (VehicleID, StationID, OwnerID, ScheduleDate, Status) VALUES
-(1, 1, 1, '2025-03-20 10:00:00', 'Pending'),
-(1, 1, 1, '2025-03-15 14:00:00', 'Completed');
-GO
-SELECT * FROM InspectionSchedules

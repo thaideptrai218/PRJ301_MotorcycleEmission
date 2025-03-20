@@ -15,16 +15,51 @@
     <hr class="bg-light">
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/inspector/home">Home</a>
+            <a class="nav-link" href="${pageContext.request.contextPath}/inspector/home">
+                <i class="fas fa-home"></i> Home
+            </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/inspector/chooseWorkplace">Choose Workplace</a>
+            <a class="nav-link" href="${pageContext.request.contextPath}/inspector/chooseWorkplace">
+                <i class="fas fa-building"></i> Choose Workplace
+            </a>
         </li>             
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/inspector/scheduleFormPage">Check Schedules</a>
+            <a class="nav-link" href="${pageContext.request.contextPath}/inspector/scheduleFormPage">
+                <i class="fas fa-calendar-alt"></i> Check Schedules
+            </a>
         </li>
     </ul>
     <div class="logout-section">
         <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger btn-block">Đăng xuất</a>
     </div>
 </div>
+
+<style>
+    .sidebar .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        color: white;
+        transition: background-color 0.3s;
+    }
+    .sidebar .nav-link:hover {
+        background-color: #ccc;
+    }
+    .sidebar .nav-link i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+    }
+    .logout-section {
+        padding: 15px;
+    }
+    .logout-section .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .logout-section .btn i {
+        margin-right: 8px;
+    }
+</style>
