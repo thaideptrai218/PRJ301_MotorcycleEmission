@@ -119,10 +119,20 @@
                                             <td><fmt:formatDate value="${schedule.scheduleDate}" pattern="dd/MM/yyyy HH:mm" /></td>
                                             <td>${schedule.status}</td>
                                             <td>
-                                                <a href="${pageContext.request.contextPath}/inspector/inspectionSchedule?vehicleID=${schedule.vehicleID}&stationID=${schedule.stationID}" 
-                                                   class="btn btn-sm btn-primary btn-action" title="Kiểm định">
-                                                    <i class="fas fa-tools"></i> Kiểm định
-                                                </a>
+                                                <c:choose>
+                                                    <c:when test="${schedule.status != 'Completed'}">
+                                                        <a href="${pageContext.request.contextPath}/inspector/inspectionSchedule?vehicleID=${schedule.vehicleID}&stationID=${schedule.stationID}&scheduleID=${schedule.scheduleID}" 
+                                                           class="btn btn-sm btn-primary btn-action" title="Kiểm định">
+                                                            <i class="fas fa-tools"></i> Kiểm định
+                                                        </a>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <a href="${pageContext.request.contextPath}/inspector/inspectionSchedule?vehicleID=${schedule.vehicleID}&stationID=${schedule.stationID}&scheduleID=${schedule.scheduleID}&reinspect=true" 
+                                                           class="btn btn-sm btn-warning btn-action" title="Tái kiểm định">
+                                                            <i class="fas fa-redo"></i> Tái kiểm định
+                                                        </a>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </td>
                                         </tr>
                                     </c:forEach>

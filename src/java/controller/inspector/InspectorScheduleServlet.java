@@ -36,6 +36,7 @@ public class InspectorScheduleServlet extends HttpServlet {
         try {
             String vehicleIDParam = request.getParameter("vehicleID");
             String stationIDParam = request.getParameter("stationID");
+            String reinspect = request.getParameter("reinspect");
             if (vehicleIDParam == null || vehicleIDParam.isEmpty()) {
                 request.setAttribute("errorMessage", "Vehicle ID is missing!");
                 request.getRequestDispatcher("/view/secure/inspector/schedules.jsp").forward(request, response);
@@ -54,7 +55,7 @@ public class InspectorScheduleServlet extends HttpServlet {
                 request.setAttribute("schedule", schedule);
                 request.setAttribute("stationID", stationIDParam);
             }
-
+            
             request.getRequestDispatcher("/view/secure/inspector/vehicleInspection.jsp").forward(request, response);
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "Invalid Vehicle ID!");
@@ -203,7 +204,8 @@ public class InspectorScheduleServlet extends HttpServlet {
             Integer inspectionStationId = (Integer) session.getAttribute("inspectionStationId");
             List<InspectionSchedule> schedules = scheduleDao.getConfirmedSchedulesByStationId(inspectionStationId);
             request.setAttribute("schedules", schedules);
-
+            request.setAttribute("statusFilter", "Confirmed");
+            
             request.getRequestDispatcher("/view/secure/inspector/schedules.jsp").forward(request, response);
 
         } catch (Exception e) {
