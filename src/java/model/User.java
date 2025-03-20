@@ -5,10 +5,10 @@ public class User {
     private String fullName;
     private String email;
     private String password;
-    private String role; // "Owner", "Inspector", "Station", "Police"
+    private String role;
     private String phone;
+    private boolean isLocked; // Thêm thuộc tính isLocked
 
-    // Constructor
     public User() {
     }
 
@@ -19,6 +19,17 @@ public class User {
         this.password = password;
         this.role = role;
         this.phone = phone;
+        this.isLocked = false;
+    }
+
+    public User(int userID, String fullName, String email, String password, String role, String phone, boolean isLocked) {
+        this.userID = userID;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.phone = phone;
+        this.isLocked = isLocked;
     }
 
     // Getters và Setters
@@ -68,5 +79,13 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 }

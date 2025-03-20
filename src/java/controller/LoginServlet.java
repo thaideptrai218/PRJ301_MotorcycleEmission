@@ -55,6 +55,9 @@ public class LoginServlet extends HttpServlet {
                 case "Police":
                     redirectUrl = "/policeDashboard";
                     break;
+                case "Admin":
+                    redirectUrl = "/adminDashboard";
+                    break;
                 default:
                     // Trường hợp vai trò không hợp lệ, chuyển về trang lỗi hoặc signin
                     redirectUrl = "/view/signin.jsp";
